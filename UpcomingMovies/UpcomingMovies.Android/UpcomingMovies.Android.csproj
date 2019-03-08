@@ -88,12 +88,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\UpcomingMovies\UpcomingMovies.csproj">
-      <Project>{59C6021C-3F06-4746-9306-BB80DB191BB3}</Project>
-      <Name>UpcomingMovies</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\icon.png" />
   </ItemGroup>
   <ItemGroup>
