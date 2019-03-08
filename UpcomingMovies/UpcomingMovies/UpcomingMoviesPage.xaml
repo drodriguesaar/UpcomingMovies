@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UpcomingMovies.UpcomingMoviesPage"
+             Title="Upcoming"
+             Padding="0" 
+             BackgroundColor="#9169bb">
+    <ContentPage.Content>
+        <StackLayout Spacing="0" Padding="0">
+            <Grid Padding="0" RowSpacing="0" ColumnSpacing="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Entry Grid.Row="0" Grid.Column="0" x:Name="sbMovieSearch" Placeholder="Search your movie..." HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" FontSize="Micro"  TextColor="White" PlaceholderColor="White" />
+                <Button Grid.Row="0" Grid.Column="1" x:Name="btnSearch" Text="Search" HorizontalOptions="EndAndExpand" VerticalOptions="EndAndExpand" FontSize="Micro" TextColor="White" BackgroundColor="#9169bb" BorderColor="#9169bb"></Button>
+                <ListView 
+                    x:Name="lstMovies" 
+                    HasUnevenRows="True" 
+                    RowHeight="100"
+                    Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" SeparatorColor="#9169bb">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout Spacing="5" VerticalOptions="Center" Padding="10,10,10,0" HorizontalOptions="Fill" BackgroundColor="#9169bb">
+                                        <Frame Padding="10,10,10,10" BackgroundColor="White">
+                                            <Grid Padding="0" RowSpacing="10">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="190" />
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="100" />
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Image Grid.Row="0" Grid.Column="0" Source="{Binding Poster}" HorizontalOptions="FillAndExpand" Aspect="AspectFit" VerticalOptions="FillAndExpand" />
+                                                <StackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="End" Spacing="1" Padding="5" >
+                                                    <Label Text="{ Binding Name }" TextColor="#9169bb" FontSize="10" FontAttributes="Bold" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" VerticalTextAlignment="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"/>
+                                                    <Label Text="{ Binding ReleaseDate, StringFormat='Release Date: {0}' }" FontSize="8"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" VerticalTextAlignment="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"/>
+                                                    <Label Text="{ Binding Score, StringFormat='Score: {0}' }" FontSize="8"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" VerticalTextAlignment="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"/>
+                                                    <Label Text="{ Binding Votes, StringFormat='Votes: {0}' }" FontSize="8"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" VerticalTextAlignment="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"/>
+                                                    <Label Text="{ Binding OverView, StringFormat='Overview: {0}' }" FontSize="8" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" VerticalTextAlignment="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"/>
+                                                    <Label Text="Click to see more details..." FontSize="6" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"></Label>
+                                                </StackLayout>
+                                            </Grid>
+                                        </Frame>
+                                    </StackLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
