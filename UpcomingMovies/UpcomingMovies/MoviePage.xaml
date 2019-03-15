@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:UpcomingMovies.ViewModel"
+             x:Class="UpcomingMovies.MoviePage"
+             Title="Detail">
+    <ContentPage.BindingContext>
+        <local:MovieDetailViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <ScrollView 
+            IsVisible="{Binding IsReady}"
+            BindingContext="{Binding Movie}"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand"
+            VerticalScrollBarVisibility="Never">
+            <StackLayout
+                Spacing="0"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand">
+                <Image 
+                    Source="{ Binding Poster }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand"
+                    Aspect="AspectFit"
+                    Margin="0,5,0,0"/>
+                <Label 
+                    Text="{ Binding Name }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Large"
+                    FontAttributes="Bold" />
+                <Label 
+                    Text="{ Binding ReleaseDate, StringFormat='Release Date: {0}' }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Small" />
+                <Label 
+                    Text="{ Binding Genres, StringFormat='Genres: {0}' }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Small" />
+                <Label 
+                    Text="{ Binding Language, StringFormat='Language: {0}' }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Small" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label 
+                        Text="{ Binding Score }"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalTextAlignment="Center" 
+                        VerticalTextAlignment="Center" 
+                        FontSize="Large"
+                        FontAttributes="Bold" />
+                    <Label 
+                        Text="{ Binding Votes }"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalTextAlignment="Center" 
+                        VerticalTextAlignment="Center" 
+                        FontSize="Large"
+                        FontAttributes="Bold" />
+                    <Label 
+                        Text="Score"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalTextAlignment="Center" 
+                        VerticalTextAlignment="Center" 
+                        FontSize="Small" />
+                    <Label 
+                        Text="Votes"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalTextAlignment="Center" 
+                        VerticalTextAlignment="Center" 
+                        FontSize="Small" />
+
+                </Grid>
+                <Label 
+                    Text="Overview"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Medium" />
+                <Label 
+                    Text="{ Binding OverView }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Medium" />
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
