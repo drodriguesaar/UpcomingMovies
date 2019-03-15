@@ -1,22 +1,24 @@
-﻿using UpcomingMovies.Component;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Web;
+using System.Windows.Input;
+using UpcomingMovies.Component;
 using UpcomingMovies.Consts;
+using UpcomingMovies.Dependency;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Xamarin.Forms;
 
-namespace Movies.ViewModel
+namespace UpcomingMovies.ViewModel
 {
     public class UpcomingMoviesViewModel : INotifyPropertyChanged
     {
-        readonly MovieComponent _movieComponent;
+        readonly MovieService _movieService;
         readonly MovieParameter _movieParameter;
-        UpcomingMovieModel _UpcomingMovies;
-        string _SearchText;
-        bool _IsReady;
-        bool _IsVisible;
+        readonly IToast toast;
+        readonly INavigation _navigation;
 
         public bool IsReady
         {
@@ -40,6 +42,7 @@ namespace Movies.ViewModel
                 }
             }
         }
+
         public string SearchText
         {
             get { return _SearchText; }
@@ -52,58 +55,152 @@ namespace Movies.ViewModel
                 }
             }
         }
-        public UpcomingMovieModel UpcomingMovies
+
+        public ObservableCollection<MovieModel> Movies
         {
-            get { return _UpcomingMovies; }
+            get { return _Movies; }
             set
             {
-                if (_UpcomingMovies != value)
+                if (_Movies != value)
                 {
-                    _UpcomingMovies = value;
-                    OnPropertyChanged("UpcomingMovies");
+                    _Movies = value;
+                    OnPropertyChanged("Movies");
                 }
             }
         }
 
-        public ICommand MovieTappedCommand { get; private set; }
-        public ICommand SearchMovieCommand { get; private set; }
-        public ICommand MovieAppearingCommand { get; private set; }
-
         public UpcomingMoviesViewModel()
         {
-            MovieTappedCommand = new Command(MovieTapped);
-            SearchMovieCommand = new Command(SearchMovie);
-            MovieAppearingCommand = new Command(MovieAppearing);
-        }
 
-        void MovieTapped()
+        }
+        public UpcomingMoviesViewModel(INavigation navigation)
         {
+            _navigation = navigation;
+            _movieService = new MovieService();
+            _movieParameter = new MovieParameter();
+            toast = DependencyService.Get<IToast>();
+            Movies = new ObservableCollection<MovieModel>();
 
+            GetMovieCommand = new Command<MovieModel>(GetMovie);
+            SearchMovieCommand = new Command(SearchMovie);
+            MovieAppearCommand = new Command<MovieModel>(MovieAppear);
+            SearchMovieUnfocusedCommand = new Command(SearchUnfocused);
         }
 
+        string _SearchText;
+        bool _IsReady;
+        bool _IsVisible;
+        ObservableCollection<MovieModel> _Movies;
+
+        public ICommand GetMovieCommand { get; private set; }
+        public ICommand SearchMovieCommand { get; private set; }
+        public ICommand SearchMovieUnfocusedCommand { get; private set; }
+        public ICommand MovieAppearCommand { get; private set; }
+
+
+        public void GetUpComingMovies()
+        {
+            _movieService.Resource = string.IsNullOrEmpty(_movieParameter.Query) ? MoviesApiResourcesConsts.UPCOMING_MOVIES : MoviesApiResourcesConsts.SEARCH_MOVIE;
+            _movieParameter.Page = 1;
+            _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        if (moviesList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                        {
+                            var movies = moviesList.Result;
+                            if (!movies.Any())
+                            {
+                                toast.ShortToast("No movies found...");
+                                return;
+                            }
+                            PopulateListView(movies);
+                            IsReady = true;
+                            IsVisible = true;
+                        }
+                    });
+                });
+        }
+        void GetMovie(MovieModel movie)
+        {
+            _navigation.PushAsync(new MoviePage { MovieID = movie.Id });
+        }
         void SearchMovie()
         {
-
+            _movieParameter.Page = 1;
+            _movieParameter.Query = HttpUtility.UrlEncode(SearchText);
+            _movieService.Resource = MoviesApiResourcesConsts.SEARCH_MOVIE;
+            _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (moviesList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                    {
+                        var movies = moviesList.Result;
+                        if (!movies.Any())
+                        {
+                            toast.ShortToast("No movies found...");
+                            return;
+                        }
+                        Movies.Clear();
+                        PopulateListView(movies);
+                    }
+                }); 
+            });
         }
-
-        void MovieAppearing()
+        void SearchUnfocused()
         {
-
+            if(string.IsNullOrEmpty(this.SearchText))
+            {
+                this.Movies.Clear();
+                _movieParameter.Query = string.Empty;
+                GetUpComingMovies();
+            }
         }
-
-        async Task GetUpcomingMovies(int page)
+        void MovieAppear(MovieModel movie)
         {
-            _movieParameter.Page = page;
-            _movieComponent.Resource = MoviesApiResourcesConsts.UPCOMING_MOVIES;
-            UpcomingMovies = await _movieComponent.GetMovies(_movieParameter);
+            if (!movie.Position.Equals(Movies.Count - 5))
+            {
+                return;
+            }
+
+            var resource = string.IsNullOrEmpty(SearchText) ? MoviesApiResourcesConsts.UPCOMING_MOVIES : MoviesApiResourcesConsts.SEARCH_MOVIE;
+            var searchQuery = string.IsNullOrEmpty(SearchText) ? string.Empty : HttpUtility.UrlEncode(SearchText);
+
+            _movieParameter.Page = _movieParameter.Page + 1;
+            _movieService.Resource = resource;
+            _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (moviesList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                    {
+                        var movies = moviesList.Result;
+                        if (!movies.Any())
+                        {
+                            toast.ShortToast("No more movies...");
+                            return;
+                        }
+                        PopulateListView(movies);
+                    }
+                });
+            });
         }
 
+        void PopulateListView(List<MovieModel> movies)
+        {
+            var position = Movies.Count();
+            movies.ForEach(movie =>
+            {
+                position = position + 1;
+                movie.Position = position;
+                Movies.Add(movie);
+            });
+        }
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public event PropertyChangedEventHandler PropertyChanged;
-
-
     }
 }

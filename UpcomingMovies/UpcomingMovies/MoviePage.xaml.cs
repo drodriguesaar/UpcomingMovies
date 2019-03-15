@@ -20,8 +20,8 @@ namespace UpcomingMovies
         {
             switch (Device.RuntimePlatform)
             {
-                case Device.Android:
-                    Padding = new Thickness(0, 5, 0, 0);
+                case Device.iOS:
+                    Padding = new Thickness(0, 20, 0, 0);
                     break;
             }
         }

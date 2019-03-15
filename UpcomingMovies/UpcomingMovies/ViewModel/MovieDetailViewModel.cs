@@ -8,7 +8,7 @@ namespace UpcomingMovies.ViewModel
 {
     public class MovieDetailViewModel : INotifyPropertyChanged
     {
-        MovieComponent _movieComponent;
+        MovieService _movieComponent;
         MovieParameter _movieParameter;
         MovieModel _Movie;
         bool _IsReady;
@@ -42,7 +42,7 @@ namespace UpcomingMovies.ViewModel
         public MovieDetailViewModel()
         {
             _movieParameter = new MovieParameter();
-            _movieComponent = new MovieComponent();
+            _movieComponent = new MovieService();
         }
         protected virtual void OnPropertyChanged(string propertyName)
         {
