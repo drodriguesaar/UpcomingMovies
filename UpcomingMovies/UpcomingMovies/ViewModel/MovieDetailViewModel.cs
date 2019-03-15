@@ -1,8 +1,9 @@
-﻿using UpcomingMovies.Component;
+﻿using System.ComponentModel;
+using System.Threading.Tasks;
+using UpcomingMovies.Component;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
-using System.ComponentModel;
-using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace UpcomingMovies.ViewModel
 {
@@ -30,7 +31,6 @@ namespace UpcomingMovies.ViewModel
             get { return _IsReady; }
             set
             {
-
                 if (_IsReady != value)
                 {
                     _IsReady = value;
@@ -48,11 +48,20 @@ namespace UpcomingMovies.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public async Task GetMovieDetails(int id)
+        public void GetMovieDetails(int id)
         {
             _movieParameter.Id = id;
-            Movie = await _movieComponent.GetMovie(_movieParameter);
-            IsReady = true;
+            _movieComponent.GetMovie(_movieParameter).ContinueWith((movie) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (movie.Status == TaskStatus.RanToCompletion)
+                    {
+                        Movie = movie.Result;
+                        IsReady = true;
+                    }
+                });
+            });
         }
     }
 }

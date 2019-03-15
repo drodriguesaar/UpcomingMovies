@@ -21,7 +21,7 @@ namespace UpcomingMovies
             switch (Device.RuntimePlatform)
             {
                 case Device.iOS:
-                    Padding = new Thickness(0, 20, 0, 0);
+                    Padding = new Thickness(0, 0, 0, 0);
                     break;
             }
         }
@@ -31,18 +31,15 @@ namespace UpcomingMovies
         }
         protected override void OnAppearing()
         {
-            base.OnAppearing();
-            Device.BeginInvokeOnMainThread(async () =>
+            try
             {
-                try
-                {
-                    await ((MovieDetailViewModel)BindingContext).GetMovieDetails(MovieID);
-                }
-                catch (Exception)
-                {
-                    DependencyService.Get<IToast>().ShortToast("Heck, this was unexpected...");
-                }
-            });
+                ((MovieDetailViewModel)BindingContext).GetMovieDetails(MovieID);
+            }
+            catch (Exception)
+            {
+                DependencyService.Get<IToast>().ShortToast("Heck, this was unexpected...");
+            }
+            base.OnAppearing();
         }
     }
 }

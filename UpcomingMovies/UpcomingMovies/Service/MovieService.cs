@@ -64,7 +64,7 @@ namespace UpcomingMovies.Component
                 movieModel.Name = response.title;
                 movieModel.OverView = response.overview;
                 movieModel.Genres = string.Join(", ", response.genres.Select(g => g.name));
-                movieModel.Poster = BuildPosterUri(response.poster_path);
+                movieModel.Poster = BuildPosterUri(response.poster_path,"500");
                 movieModel.Id = response.id;
                 movieModel.Score = response.vote_average;
                 movieModel.Votes = response.vote_count;
@@ -78,14 +78,14 @@ namespace UpcomingMovies.Component
             }
             return movieModel;
         }
-        string BuildPosterUri(string posterPath)
+        string BuildPosterUri(string posterPath, string size = "200")
         {
             if (string.IsNullOrEmpty(posterPath))
             {
                 return "https://tinyurl.com/y2eejo2m";
             }
 
-            return string.Format("https://image.tmdb.org/t/p/w200/{0}", posterPath);
+            return string.Format("https://image.tmdb.org/t/p/w{1}/{0}", posterPath, size);
         }
         string BuildAbreviatedMovieOverView(string movieDescription)
         {

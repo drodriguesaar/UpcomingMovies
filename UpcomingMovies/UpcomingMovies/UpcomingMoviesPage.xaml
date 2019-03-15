@@ -15,7 +15,7 @@
         <converter:SearchBarUnfocusedEventArgsToSearchBarUnfocusedConverter x:Key="SearchBarUnfocusedConverter" />
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout Spacing="0" Padding="5" IsVisible="{ Binding IsReady }">
+        <StackLayout IsVisible="{ Binding IsReady }">
             <SearchBar 
                     Placeholder="Search..." 
                     HorizontalOptions="FillAndExpand" 

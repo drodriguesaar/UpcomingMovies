@@ -10,6 +10,7 @@ namespace UpcomingMovies
         public UpcomingMoviesPage()
         {   
             InitializeComponent();
+            SetConfiguration();
             SetPageData();
         }
         void SetConfiguration()
@@ -17,7 +18,7 @@ namespace UpcomingMovies
             switch (Device.RuntimePlatform)
             {
                 case Device.iOS:
-                    Padding = new Thickness(0, 20, 0, 0);
+                    Padding = new Thickness(0, 0, 0, 0);
                     break;
             }
 
