@@ -3,111 +3,120 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:UpcomingMovies.ViewModel"
              x:Class="UpcomingMovies.MoviePage"
-             Title="Detail"
-             Padding="0" 
-             BackgroundColor="#9169bb">
+             Title="Detail">
     <ContentPage.BindingContext>
         <local:MovieDetailViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout Spacing="0" Padding="0" IsVisible="{Binding IsReady}">
-            <ScrollView>
-                <StackLayout  Padding="5" BindingContext="{Binding Movie}">
-                    <Frame BackgroundColor="White" Padding="5">
-                        <Grid Padding="0" ColumnSpacing="0" RowSpacing="0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="200" />
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+        <ScrollView 
+            IsVisible="{Binding IsReady}"
+            BindingContext="{Binding Movie}"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand"
+            VerticalScrollBarVisibility="Never">
+            <StackLayout
+                Spacing="0"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand">
+                <Image 
+                    Source="{ Binding Poster }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand"
+                    Aspect="AspectFit"
+                    Margin="0,5,0,0"/>
+                <Label 
+                    Text="{ Binding Name }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Large"
+                    FontAttributes="Bold" />
+                <Label 
+                    Text="{ Binding ReleaseDate, StringFormat='Release Date: {0}' }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Small" />
+                <Label 
+                    Text="{ Binding Genres, StringFormat='Genres: {0}' }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Small" />
+                <Label 
+                    Text="{ Binding Language, StringFormat='Language: {0}' }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Small" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label 
+                        Text="{ Binding Score }"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalTextAlignment="Center" 
+                        VerticalTextAlignment="Center" 
+                        FontSize="Large"
+                        FontAttributes="Bold" />
+                    <Label 
+                        Text="{ Binding Votes }"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalTextAlignment="Center" 
+                        VerticalTextAlignment="Center" 
+                        FontSize="Large"
+                        FontAttributes="Bold" />
+                    <Label 
+                        Text="Score"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalTextAlignment="Center" 
+                        VerticalTextAlignment="Center" 
+                        FontSize="Small" />
+                    <Label 
+                        Text="Votes"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalTextAlignment="Center" 
+                        VerticalTextAlignment="Center" 
+                        FontSize="Small" />
 
-                            <Image 
-                                Source="{ Binding Poster }"
-                                Grid.Row="0" 
-                                Grid.Column="0" 
-                                HorizontalOptions="FillAndExpand" 
-                                Aspect="AspectFit" 
-                                VerticalOptions="FillAndExpand"/>
-
-                            <StackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="7">
-                                <Label 
-                                    Text="{ Binding Name }"
-                                    TextColor="#9169bb"
-                                    HorizontalOptions="StartAndExpand" 
-                                    VerticalOptions="Start" 
-                                    HorizontalTextAlignment="Start" 
-                                    VerticalTextAlignment="Start" 
-                                    FontSize="10" 
-                                    FontAttributes="Bold" 
-                                    LineBreakMode="WordWrap"/>
-
-                                <Label 
-                                    Text="{ Binding Language, StringFormat='Original Language: {0}' }"
-                                    HorizontalOptions="StartAndExpand" 
-                                    VerticalOptions="Start" 
-                                    HorizontalTextAlignment="Start" 
-                                    VerticalTextAlignment="Start" 
-                                    FontSize="8"/>
-
-                                <Label 
-                                    Text="{ Binding ReleaseDate, StringFormat='Release Date: {0}' }"
-                                    HorizontalOptions="StartAndExpand" 
-                                    VerticalOptions="Start" 
-                                    HorizontalTextAlignment="Start" 
-                                    VerticalTextAlignment="Start" 
-                                    FontSize="8"/>
-
-                                <Label 
-                                    Text="{Binding Genres, StringFormat='Genres: {0}'}"
-                                    HorizontalOptions="StartAndExpand" 
-                                    VerticalOptions="Start" 
-                                    HorizontalTextAlignment="Start" 
-                                    VerticalTextAlignment="Start" 
-                                    FontSize="8"/>
-
-                                <Label 
-                                    Text="{Binding Score, StringFormat='Score: {0}'}"
-                                    HorizontalOptions="StartAndExpand" 
-                                    VerticalOptions="Start" 
-                                    HorizontalTextAlignment="Start" 
-                                    VerticalTextAlignment="Start" 
-                                    FontSize="8"/>
-
-                                <Label 
-                                    Text="{Binding Votes, StringFormat='Votes: {0}'}"
-                                    HorizontalOptions="StartAndExpand" 
-                                    VerticalOptions="Start" 
-                                    HorizontalTextAlignment="Start" 
-                                    VerticalTextAlignment="Start" 
-                                    FontSize="8"/>
-
-                                <Label 
-                                    Text="{Binding HomePage, StringFormat='Homepage: {0}'}"
-                                    HorizontalOptions="StartAndExpand" 
-                                    VerticalOptions="Start" 
-                                    HorizontalTextAlignment="Start" 
-                                    VerticalTextAlignment="Start" 
-                                    FontSize="8"/>
-                            </StackLayout>
-
-                            <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Padding="0,7,0,0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                                <Label 
-                                    Text="{Binding OverView, StringFormat='Description: {0}'}"
-                                    HorizontalOptions="FillAndExpand" 
-                                    VerticalOptions="FillAndExpand" 
-                                    HorizontalTextAlignment="Start" 
-                                    VerticalTextAlignment="Start" 
-                                    FontSize="8" 
-                                    LineBreakMode="WordWrap" 
-                                    FlowDirection="MatchParent"></Label>
-                            </StackLayout>
-                        </Grid>
-                    </Frame>
-                </StackLayout>
-            </ScrollView>
-        </StackLayout>
+                </Grid>
+                <Label 
+                    Text="Overview"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Medium" />
+                <Label 
+                    Text="{ Binding OverView }"
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="FillAndExpand" 
+                    HorizontalTextAlignment="Center" 
+                    VerticalTextAlignment="Center" 
+                    FontSize="Medium" />
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

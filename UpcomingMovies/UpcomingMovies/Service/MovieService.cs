@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using UpcomingMovies.Consts;
@@ -13,26 +12,26 @@ using UpcomingMovies.Service;
 
 namespace UpcomingMovies.Component
 {
-    public class MovieComponent
+    public class MovieService
     {
         IService _baseService;
-        public MovieComponent()
+        public MovieService()
         {
 
         }
-        public MovieComponent(IService service)
+        public MovieService(IService service)
         {
             _baseService = service;
         }
         public string Resource { get; set; }
-        internal async Task<UpcomingMovieModel> GetMovies(MovieParameter movieParameter)
+        internal async Task<List<MovieModel>> GetMovies(MovieParameter movieParameter)
         {
             _baseService = new BaseService(Resource);
-            var upComingMovieModel = new UpcomingMovieModel();
+            var moviesList = new List<MovieModel>();
             try
             {
                 var response = await _baseService.Consume<MovieParameter, ResponseListDTO<List<MovieDTO>>>(movieParameter, HTTPMethodEnum.GET);
-                var movieModelList = response.results.Select(movie => new MovieModel
+                moviesList = response.results.Select(movie => new MovieModel
                 {
                     ReleaseDate = string.IsNullOrEmpty(movie.release_date) ? "not available" : DateTime.Parse(movie.release_date).ToShortDateString(),
                     Name = movie.title,
@@ -42,17 +41,11 @@ namespace UpcomingMovies.Component
                     Votes = movie.vote_count,
                     Id = movie.id
                 }).ToList();
-                upComingMovieModel.Movies = movieModelList;
-                upComingMovieModel.Page = response.page;
-                upComingMovieModel.Total = response.total_pages;
-                upComingMovieModel.NextPage = response.page + 1;
             }
-            catch (Exception ex)
+            catch
             {
-                upComingMovieModel.Error = true;
-                upComingMovieModel.ErrorMessage = ex.Message;
             }
-            return upComingMovieModel;
+            return moviesList;
         }
         internal async Task<MovieModel> GetMovie(MovieParameter movieParameter)
         {
@@ -71,7 +64,7 @@ namespace UpcomingMovies.Component
                 movieModel.Name = response.title;
                 movieModel.OverView = response.overview;
                 movieModel.Genres = string.Join(", ", response.genres.Select(g => g.name));
-                movieModel.Poster = BuildPosterUri(response.poster_path);
+                movieModel.Poster = BuildPosterUri(response.poster_path,"500");
                 movieModel.Id = response.id;
                 movieModel.Score = response.vote_average;
                 movieModel.Votes = response.vote_count;
@@ -85,14 +78,14 @@ namespace UpcomingMovies.Component
             }
             return movieModel;
         }
-        string BuildPosterUri(string posterPath)
+        string BuildPosterUri(string posterPath, string size = "200")
         {
             if (string.IsNullOrEmpty(posterPath))
             {
                 return "https://tinyurl.com/y2eejo2m";
             }
 
-            return string.Format("https://image.tmdb.org/t/p/w200/{0}", posterPath);
+            return string.Format("https://image.tmdb.org/t/p/w{1}/{0}", posterPath, size);
         }
         string BuildAbreviatedMovieOverView(string movieDescription)
         {
@@ -101,7 +94,7 @@ namespace UpcomingMovies.Component
                 return string.Empty;
             }
 
-            var words = movieDescription.Split(' ').Take(25);
+            var words = movieDescription.Split(' ').Take(15);
             var abreviatedOverView = string.Join(" ", words);
             abreviatedOverView = string.Concat(abreviatedOverView, "...");
 
