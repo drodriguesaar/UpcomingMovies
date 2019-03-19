@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpcomingMovies.Android", "U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpcomingMovies.iOS", "UpcomingMovies\UpcomingMovies.iOS\UpcomingMovies.iOS.csproj", "{EEC64558-4246-46D7-8389-9ED3589807BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpcomingMovies", "UpcomingMovies\UpcomingMovies\UpcomingMovies.csproj", "{EBE80EBB-0FA6-4B97-BB8B-552AC29BBDAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpcomingMovies", "UpcomingMovies\UpcomingMovies\UpcomingMovies.csproj", "{EBE80EBB-0FA6-4B97-BB8B-552AC29BBDAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

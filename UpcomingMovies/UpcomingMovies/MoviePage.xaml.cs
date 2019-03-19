@@ -1,5 +1,6 @@
 ﻿using System;
 using UpcomingMovies.Dependency;
+using UpcomingMovies.Infra;
 using UpcomingMovies.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -18,12 +19,7 @@ namespace UpcomingMovies
         }
         void SetConfiguration()
         {
-            switch (Device.RuntimePlatform)
-            {
-                case Device.iOS:
-                    Padding = new Thickness(0, 0, 0, 0);
-                    break;
-            }
+            Util.SetPagePadding(this);
         }
         void SetPageData()
         {
@@ -37,7 +33,7 @@ namespace UpcomingMovies
             }
             catch (Exception)
             {
-                DependencyService.Get<IToast>().ShortToast("Heck, this was unexpected...");
+                App.Toast.ShortToast("Heck, this was unexpected...");
             }
             base.OnAppearing();
         }

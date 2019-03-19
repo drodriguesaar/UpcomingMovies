@@ -33,7 +33,10 @@
                     VerticalOptions="StartAndExpand"
                     IsVisible="{ Binding IsVisible }"
                     ItemsSource="{ Binding Movies }"
-                    HasUnevenRows="True">
+                    HasUnevenRows="True"
+                    IsPullToRefreshEnabled="True"
+                    IsRefreshing="{Binding IsRefreshing}"
+                    RefreshCommand="{Binding PullToRefreshCommand}">
                 <ListView.Behaviors>
                     <behavior:ItemTappedBehavior Command="{ Binding GetMovieCommand }" Converter="{ StaticResource ItemTappedConverter }"/>
                     <behavior:ItemAppearBehavior Command="{ Binding MovieAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>

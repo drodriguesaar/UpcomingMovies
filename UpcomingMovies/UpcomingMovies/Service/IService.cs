@@ -8,6 +8,6 @@ namespace UpcomingMovies.Service
 {
     public interface IService
     {
-        Task<TResult> Consume<TData, TResult>(TData data, HTTPMethodEnum httpMethodEnum);
+        Task<TResult> Consume<TData, TResult>(TData data, string resource, HTTPMethodEnum httpMethodEnum);
     }
 }

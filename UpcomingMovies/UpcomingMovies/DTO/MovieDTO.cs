@@ -2,7 +2,7 @@
 
 namespace UpcomingMovies.DTO
 {
-    internal class MovieDTO
+    public class MovieDTO
     {
 
         public MovieDTO()
@@ -27,6 +27,7 @@ namespace UpcomingMovies.DTO
         public string status { get; set; }
         public string imdb_id { get; set; }
         public bool adult { get; set; }
+        public bool video { get; set; }
         public string original_language { get; set; }
         public List<CompanyDTO> production_companies { get; set; }
         public List<CountryDTO> production_countries { get; set; }

@@ -1,9 +1,11 @@
-﻿namespace UpcomingMovies.Model
+﻿using SQLite;
+
+namespace UpcomingMovies.Model
 {
     public class MovieModel : IErroModel
     {
-        public int Position { get; set; }
         public int Id { get; set; }
+        public int Position { get; set; }
         public string Name { get; set; }
         public string Poster { get; set; }
         public string Genres { get; set; }

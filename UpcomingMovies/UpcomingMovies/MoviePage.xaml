@@ -108,7 +108,8 @@
                     VerticalOptions="FillAndExpand" 
                     HorizontalTextAlignment="Center" 
                     VerticalTextAlignment="Center" 
-                    FontSize="Medium" />
+                    FontSize="Medium" 
+                    FontAttributes="Bold"/>
                 <Label 
                     Text="{ Binding OverView }"
                     HorizontalOptions="FillAndExpand" 

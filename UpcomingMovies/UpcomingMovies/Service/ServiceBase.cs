@@ -6,60 +6,49 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading.Tasks;
-using UpcomingMovies.Enums;
 
 namespace UpcomingMovies.Service
 {
-    internal class BaseService : IService
+    internal class ServiceBase
     {
-        HttpClient _baseHttpClient;
-        private readonly string EndPointAPIKey = "1f54bd990f1cdfb230adb312546d765d";
-        private readonly string EndPointDomain = "https://api.themoviedb.org/3";
+
+        protected HttpClient _baseHttpClient { get; private set; }
+        protected string EndPointDomain { get; private set; }
+        protected string EndPointAPIKey { get; private set; }
         protected string EndPoint { get; set; }
 
-        public BaseService(string resource)
+        public ServiceBase(string endPointDomain, string endPointAPIKey)
         {
+            this.EndPointAPIKey = endPointAPIKey;
+            this.EndPointDomain = endPointDomain;
             SetBaseHttpClient();
-            EndPoint = string.Format("{0}/{1}?api_key={2}&language=en-US", EndPointDomain, resource, EndPointAPIKey);
         }
 
-        public async Task<TResult> Consume<TData, TResult>(TData data, HTTPMethodEnum httpMethodEnum)
-        {
-            switch (httpMethodEnum)
-            {
-                case HTTPMethodEnum.GET:
-                    return await Get<TData, TResult>(data);
-                default:
-                    return default(TResult);
-            }
-        }
-
-        private void SetBaseHttpClient()
+        void SetBaseHttpClient()
         {
             var httpClientHandler = new HttpClientHandler
             {
-                AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
+                AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
             };
-            _baseHttpClient = new HttpClient(httpClientHandler)
+            _baseHttpClient = new HttpClient(httpClientHandler, false)
             {
-                BaseAddress = new Uri(EndPointDomain)
+                BaseAddress = new Uri(EndPointDomain),
+
             };
+
             _baseHttpClient.DefaultRequestHeaders.Clear();
             _baseHttpClient.DefaultRequestHeaders.Accept.Clear();
             _baseHttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        private async Task<TResult> Get<TData, TResult>(TData data)
+        protected async Task<TResult> Get<TData, TResult>(TData data)
         {
-            using (_baseHttpClient)
-            {
-                var queryString = GenerateQueryString(data);
-                var resposta = await _baseHttpClient.GetAsync(string.Format("{0}&{1}", EndPoint, queryString));
-                resposta.EnsureSuccessStatusCode();
-                var respostastring = await resposta.Content.ReadAsStringAsync();
-                var returnData = Deserialize<TResult>(respostastring);
-                return returnData;
-            }
+            var queryString = GenerateQueryString(data);
+            var resposta = await _baseHttpClient.GetAsync(string.Format("{0}&{1}", EndPoint, queryString));
+            resposta.EnsureSuccessStatusCode();
+            var respostastring = await resposta.Content.ReadAsStringAsync();
+            var returnData = Deserialize<TResult>(respostastring);
+            return returnData;
         }
 
         private string Serialize<T>(T data)
