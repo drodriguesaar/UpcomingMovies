@@ -25,7 +25,7 @@
                     Text="{ Binding SearchText }" 
                     SearchCommand="{ Binding SearchMovieCommand }">
                 <SearchBar.Behaviors>
-                    <behavior:SearchBarUnfocusedBehavior Command="{Binding SearchMovieUnfocusedCommand}" Converter="{StaticResource SearchBarUnfocusedConverter}"/>
+                  <behavior:EventToCommandBehavior EventName="Unfocused" Command="{ Binding SearchMovieUnfocusedCommand }" Converter="{StaticResource SearchBarUnfocusedConverter}"/>
                 </SearchBar.Behaviors>
             </SearchBar>
             <ListView  
@@ -38,8 +38,8 @@
                     IsRefreshing="{Binding IsRefreshing}"
                     RefreshCommand="{Binding PullToRefreshCommand}">
                 <ListView.Behaviors>
-                    <behavior:ItemTappedBehavior Command="{ Binding GetMovieCommand }" Converter="{ StaticResource ItemTappedConverter }"/>
-                    <behavior:ItemAppearBehavior Command="{ Binding MovieAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>
+                  <behavior:EventToCommandBehavior EventName="ItemTapped" Command="{ Binding GetMovieCommand }" Converter="{ StaticResource ItemTappedConverter }"/>
+                  <behavior:EventToCommandBehavior EventName="ItemAppearing" Command="{ Binding MovieAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
