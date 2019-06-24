@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UpcomingMovies.DataBase;
 using UpcomingMovies.Dependency;
+using UpcomingMovies.Model;
 using UpcomingMovies.Service;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -14,7 +16,7 @@ namespace UpcomingMovies
         static MovieDataBase dataBase;
         static IToast toast;
         static IService baseService;
-
+        
         public static MovieDataBase DataBase
         {
             get

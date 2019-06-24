@@ -15,7 +15,7 @@
             VerticalOptions="FillAndExpand"
             VerticalScrollBarVisibility="Never">
             <StackLayout
-                Spacing="0"
+                Spacing="1"
                 HorizontalOptions="FillAndExpand"
                 VerticalOptions="FillAndExpand">
                 <Image 
@@ -100,7 +100,6 @@
                         HorizontalTextAlignment="Center" 
                         VerticalTextAlignment="Center" 
                         FontSize="Small" />
-
                 </Grid>
                 <Label 
                     Text="Overview"
@@ -117,6 +116,26 @@
                     HorizontalTextAlignment="Center" 
                     VerticalTextAlignment="Center" 
                     FontSize="Medium" />
+                <ScrollView
+                    Orientation="Horizontal">
+                    <StackLayout
+                        Orientation="Horizontal"
+                        BindableLayout.ItemsSource="{Binding Images}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Image 
+                                    Grid.Row="0" 
+                                    Grid.Column="0" 
+                                    Source="{ Binding Path }" 
+                                    HeightRequest="{Binding Height}"
+                                    WidthRequest="{Binding Width}"
+                                    HorizontalOptions="CenterAndExpand" 
+                                    VerticalOptions="CenterAndExpand"    
+                                    Aspect="Fill" />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                </ScrollView>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

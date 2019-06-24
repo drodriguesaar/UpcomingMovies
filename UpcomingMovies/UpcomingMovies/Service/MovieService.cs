@@ -46,6 +46,7 @@ namespace UpcomingMovies.Component
         internal async Task<MovieModel> GetMovie(MovieParameter movieParameter)
         {
             var movieresource = string.Format(MoviesApiResourcesConsts.MOVIE, movieParameter.Id);
+            var movieID = movieParameter.Id;
             movieParameter.Id = null;
             MovieModel movieModel = new MovieModel();
             try
@@ -68,6 +69,17 @@ namespace UpcomingMovies.Component
                 movieModel.Votes = response.vote_count;
                 movieModel.Language = response.original_language;
                 movieModel.HomePage = response.homepage;
+
+                movieresource = string.Format(MoviesApiResourcesConsts.MOVIE_IMAGES, movieID);
+                var imagesresponse = await App.BaseService.Consume<MovieParameter, MovieDTO>(movieParameter, movieresource, HTTPMethodEnum.GET);
+                movieModel.Images.AddRange(imagesresponse.posters.Select(p => new ImageModel
+                {
+                    Height = p.height,
+                    Width = p.width,
+                    Path = BuildPosterUri(p.file_path)
+                }));
+
+
             }
             catch (Exception ex)
             {

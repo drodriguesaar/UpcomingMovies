@@ -9,15 +9,18 @@ using UpcomingMovies.Component;
 using UpcomingMovies.Consts;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
+using UpcomingMovies.Service;
 using Xamarin.Forms;
 
 namespace UpcomingMovies.ViewModel
 {
     public class UpcomingMoviesViewModel : INotifyPropertyChanged
     {
-        readonly MovieService _movieService;
-        readonly MovieParameter _movieParameter;
         readonly INavigation _navigation;
+        readonly MovieService _movieService;
+        readonly GenreService _genreService;
+        readonly PeopleService _peopleService;
+        readonly MovieParameter _movieParameter;
 
         public bool IsReady
         {
@@ -80,74 +83,97 @@ namespace UpcomingMovies.ViewModel
                 }
             }
         }
+        public ObservableCollection<MovieModel> NowPlaying
+        {
+            get { return _NowPlaying; }
+            set
+            {
+                if (_NowPlaying != value)
+                {
+                    _NowPlaying = value;
+                    OnPropertyChanged("NowPlaying");
+                }
+            }
+        }
+        public ObservableCollection<GenreModel> Genres
+        {
+            get { return _Genres; }
+            set
+            {
+                if (_Genres != value)
+                {
+                    _Genres = value;
+                    OnPropertyChanged("Genres");
+                }
+            }
+        }
+        public ObservableCollection<ActorModel> Actors
+        {
+            get { return _Actors; }
+            set
+            {
+                if (_Actors != value)
+                {
+                    _Actors = value;
+                    OnPropertyChanged("Actors");
+                }
+            }
+        }
 
+        bool _IsReady;
+        bool _IsVisible;
+        bool _IsRefreshing;
+        string _SearchText;
+        ObservableCollection<MovieModel> _Movies;
+        ObservableCollection<MovieModel> _NowPlaying;
+        ObservableCollection<GenreModel> _Genres;
+        ObservableCollection<ActorModel> _Actors;
         public UpcomingMoviesViewModel()
         {
-
         }
         public UpcomingMoviesViewModel(INavigation navigation)
         {
             _navigation = navigation;
             _movieService = new MovieService();
+            _genreService = new GenreService();
+            _peopleService = new PeopleService();
             _movieParameter = new MovieParameter();
+
             Movies = new ObservableCollection<MovieModel>();
+            Genres = new ObservableCollection<GenreModel>();
+            NowPlaying = new ObservableCollection<MovieModel>();
+            Actors = new ObservableCollection<ActorModel>();
 
             GetMovieCommand = new Command<MovieModel>(GetMovie);
             SearchMovieCommand = new Command(SearchMovie);
             MovieAppearCommand = new Command<MovieModel>(MovieAppear);
-            SearchMovieUnfocusedCommand = new Command(SearchUnfocused);
             PullToRefreshCommand = new Command(PullToRefresh);
+            GetMoviesByGenreCommand = new Command<GenreModel>(GetMoviesByGenre);
         }
 
-        string _SearchText;
-        bool _IsReady;
-        bool _IsVisible;
-        bool _IsRefreshing;
-        ObservableCollection<MovieModel> _Movies;
+        public ICommand GetMovieCommand { get; set; }
+        public ICommand GetMoviesByGenreCommand { get; set; }
+        public ICommand SearchMovieCommand { get; set; }
+        public ICommand MovieAppearCommand { get; set; }
+        public ICommand PullToRefreshCommand { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public ICommand GetMovieCommand { get; private set; }
-        public ICommand SearchMovieCommand { get; private set; }
-        public ICommand SearchMovieUnfocusedCommand { get; private set; }
-        public ICommand MovieAppearCommand { get; private set; }
-        public ICommand PullToRefreshCommand { get; private set; }
-
-        void GetUpComingMovies()
-        {
-            _movieParameter.Resource = string.IsNullOrEmpty(_movieParameter.Query) ? MoviesApiResourcesConsts.UPCOMING_MOVIES : MoviesApiResourcesConsts.SEARCH_MOVIE;
-            _movieParameter.Page = 1;
-            _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
-                {
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        if (moviesList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
-                        {
-                            var movies = moviesList.Result;
-                            if (!movies.Any())
-                            {
-                                App.Toast.ShortToast("No movies found...");
-                                return;
-                            }
-                            Movies.Clear();
-                            PopulateListView(movies);
-                            IsReady = true;
-                            IsVisible = true;
-                            IsRefreshing = false;
-                            SetMovieCacheTimeSpanData();
-                        }
-                    });
-                });
-        }
-        void GetMovie(MovieModel movie)
-        {
-            NavigatedToDetails = true;
-            _navigation.PushAsync(new MoviePage { MovieID = movie.Id });
-        }
+        #region Movies region
         void SearchMovie()
         {
-            App.Toast.ShortToast("Searching...");
+            NavigatedToDetails = true;
+            _navigation.PushAsync(new SearchResultPage { SearchText = this.SearchText });
+            this.SearchText = string.Empty;
+        }
+        void PullToRefresh()
+        {
+#if __ANDROID__
+            App.Toast.ShortToast("Refreshing...");
+#endif
+
+            this.IsRefreshing = true;
+            _movieParameter.Resource = MoviesApiResourcesConsts.UPCOMING_MOVIES;
             _movieParameter.Page = 1;
-            _movieParameter.Query = HttpUtility.UrlEncode(SearchText);
-            _movieParameter.Resource = MoviesApiResourcesConsts.SEARCH_MOVIE;
             _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
@@ -158,22 +184,17 @@ namespace UpcomingMovies.ViewModel
                         if (!movies.Any())
                         {
                             App.Toast.ShortToast("No movies found...");
-                            return;
                         }
-                        Movies.Clear();
-                        PopulateListView(movies);
+                        else
+                        {
+                            Movies.Clear();
+                            PopulateMoviesListView(movies);
+                            UpdateMovieCacheTimeSpanData();
+                        }
+                        IsRefreshing = false;
                     }
                 });
             });
-        }
-        void SearchUnfocused()
-        {
-            if (string.IsNullOrEmpty(SearchText))
-            {
-                Movies.Clear();
-                _movieParameter.Query = string.Empty;
-                GetMovies();
-            }
         }
         void MovieAppear(MovieModel movie)
         {
@@ -182,8 +203,7 @@ namespace UpcomingMovies.ViewModel
                 return;
             }
 
-            var resource = string.IsNullOrEmpty(SearchText) ? MoviesApiResourcesConsts.UPCOMING_MOVIES : MoviesApiResourcesConsts.SEARCH_MOVIE;
-            var searchQuery = string.IsNullOrEmpty(SearchText) ? string.Empty : HttpUtility.UrlEncode(SearchText);
+            var resource = MoviesApiResourcesConsts.UPCOMING_MOVIES;
 #if __ANDROID__
             App.Toast.ShortToast("Loading...");
 #endif
@@ -201,68 +221,19 @@ namespace UpcomingMovies.ViewModel
                             App.Toast.ShortToast("No more movies...");
                             return;
                         }
-                        PopulateListView(movies);
+                        PopulateMoviesListView(movies);
                     }
                 });
             });
         }
-        void PopulateListView(List<MovieModel> movies)
-        {
-            var position = Movies.Count();
-            movies.ForEach(movie =>
-            {
-                position = position + 1;
-                movie.Position = position;
-                Movies.Add(movie);
-            });
-        }
-        void PullToRefresh()
-        {
-#if __ANDROID__
-            App.Toast.ShortToast("Refreshing...");
-#endif
 
-            IsRefreshing = true;
-            _movieParameter.Resource = MoviesApiResourcesConsts.UPCOMING_MOVIES;
-            _movieParameter.Page = 1;
-            _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    if (moviesList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
-                    {
-                        var movies = moviesList.Result;
-                        if (!movies.Any())
-                        {
-                            App.Toast.ShortToast("No movies found...");
-                            IsReady = true;
-                            IsVisible = true;
-                            IsRefreshing = false;
-                            return;
-                        }
-                        Movies.Clear();
-                        PopulateListView(movies);
-                        IsReady = true;
-                        IsVisible = true;
-                        IsRefreshing = false;
-                        UpdateMovieCacheTimeSpanData();
-                    }
-                });
-            });
-
-        }
         public void GetMovies()
         {
+            this.IsVisible = false;
             App.DataBase.GetMovieDataCacheTimeSpanAsync().ContinueWith((movieCachedDataResult) =>
             {
                 if (movieCachedDataResult.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
-                    if (this.NavigatedToDetails)
-                    {
-                        this.NavigatedToDetails = false;
-                        return;
-                    }
-
                     var actualDate = DateTime.Now;
                     var movieCacheDateTimeSpan = movieCachedDataResult.Result;
 
@@ -276,9 +247,7 @@ namespace UpcomingMovies.ViewModel
                             {
                                 var moviesCached = moviesCachedResult.Result;
                                 Movies.Clear();
-                                PopulateListView(moviesCached);
-                                IsReady = true;
-                                IsVisible = true;
+                                PopulateMoviesListView(moviesCached);
                                 _movieParameter.Page = 1;
                                 _movieParameter.Resource = MoviesApiResourcesConsts.UPCOMING_MOVIES;
                             }
@@ -288,15 +257,58 @@ namespace UpcomingMovies.ViewModel
                     {
                         GetUpComingMovies();
                     }
+                    this.IsVisible = true;
                 }
             });
         }
+        void GetUpComingMovies()
+        {
+            _movieParameter.Resource = MoviesApiResourcesConsts.UPCOMING_MOVIES;
+            _movieParameter.Page = 1;
+            _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        if (moviesList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                        {
+                            var movies = moviesList.Result;
+                            if (!movies.Any())
+                            {
+                                App.Toast.ShortToast("No movies found...");
+
+                            }
+                            else
+                            {
+                                Movies.Clear();
+                                PopulateMoviesListView(movies);
+                                SetMovieCacheTimeSpanData();
+                            }
+                        }
+                    });
+                });
+        }
+        void GetMovie(MovieModel movie)
+        {
+            NavigatedToDetails = true;
+            _navigation.PushAsync(new MoviePage { MovieID = movie.Id });
+        }
+        void PopulateMoviesListView(List<MovieModel> movies)
+        {
+            var position = Movies.Count();
+            movies.ForEach(movie =>
+            {
+                position = position + 1;
+                movie.Position = position;
+                Movies.Add(movie);
+            });
+        }
+
         void SetMovieCacheTimeSpanData()
         {
             var movieCacheTimeSpan = DateTime.Now;
             App.DataBase.InsertMovieDataCacheTimeSpanAsync(movieCacheTimeSpan, movieCacheTimeSpan.AddDays(1)).ContinueWith((result) =>
             {
-                if(result.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                if (result.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
                     App.DataBase.InsertMoviesAsync(Movies.ToList()).Wait();
                 }
@@ -306,7 +318,7 @@ namespace UpcomingMovies.ViewModel
         {
             App.DataBase.DeleteMoviesAsync().ContinueWith((resultDelete) =>
             {
-                if(resultDelete.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                if (resultDelete.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
                     var movieCacheTimeSpan = DateTime.Now;
                     App.DataBase.UpdateMovieDataCacheTimeSpanAsync(movieCacheTimeSpan, movieCacheTimeSpan.AddDays(1)).ContinueWith((resultUpdate) =>
@@ -315,11 +327,101 @@ namespace UpcomingMovies.ViewModel
                     });
                 }
             });
+        } 
+        #endregion
+
+        #region Now playing region
+        public void GetNowPlaying()
+        {
+            _movieParameter.Resource = MoviesApiResourcesConsts.NOW_PLAYING;
+            _movieParameter.Page = 1;
+            _movieService.GetMovies(_movieParameter).ContinueWith((nowPlayingList) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (nowPlayingList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                    {
+                        var movies = nowPlayingList.Result;
+                        if (!movies.Any())
+                        {
+                            App.Toast.ShortToast("No movies found...");
+
+                        }
+                        else
+                        {
+                            NowPlaying.Clear();
+                            PopulateNowPlayingListView(movies);
+                        }
+                    }
+                });
+            });
         }
+        void PopulateNowPlayingListView(List<MovieModel> nowPlayingList)
+        {
+            nowPlayingList.ForEach(nowplaying =>
+            {
+                NowPlaying.Add(nowplaying);
+            });
+        } 
+        #endregion
+
+        #region Genres region
+        public void GetGenres()
+        {
+            _genreService.GetGenres().ContinueWith((genresList) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (genresList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                    {
+                        var genres = genresList.Result;
+                        Genres.Clear();
+                        PopulateGenresListView(genres);
+                    }
+                });
+            });
+        }
+        void GetMoviesByGenre(GenreModel genre)
+        {
+
+        } 
+        void PopulateGenresListView(List<GenreModel> genres)
+        {
+            genres.ForEach(genre =>
+            {
+                Genres.Add(genre);
+            });
+        }
+        #endregion
+
+        #region Actors region
+        public void GetActors()
+        {
+            _peopleService.GetActors().ContinueWith((actorsList) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (actorsList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                    {
+                        var actors = actorsList.Result;
+                        Actors.Clear();
+                        PopulateActorsListView(actors);
+                    }
+                });
+            });
+        }
+        void PopulateActorsListView(List<ActorModel> actors)
+        {
+            actors.ForEach(actor =>
+            {
+                Actors.Add(actor);
+            });
+        } 
+        #endregion
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

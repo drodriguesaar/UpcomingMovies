@@ -1,83 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="UpcomingMovies.UpcomingMoviesPage"
+             x:Class="UpcomingMovies.SearchResultPage"
              xmlns:local="clr-namespace:UpcomingMovies.ViewModel"
              xmlns:behavior="clr-namespace:UpcomingMovies.Behavior"
              xmlns:converter="clr-namespace:UpcomingMovies.Converter"
-             Title="Upcoming">
+             Title="{Binding SearchText}">
     <ContentPage.BindingContext>
-        <local:UpcomingMoviesViewModel />
+        <local:SearchResultViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Resources>
         <converter:ItemTappedEventArgsToItemTappedConverter x:Key="ItemTappedConverter"/>
         <converter:ItemAppearEventArgsToItemAppearConverter x:Key="ItemAppearConverter"/>
-        <converter:BooleanConverter x:Key="BoolConverter" />
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <!--SEARCH BAR ELEMENT-->
-            <SearchBar 
-                    Placeholder="Search..." 
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="Start" 
-                    FontSize="Small"  
-                    FlowDirection="MatchParent"
-                    Text="{ Binding SearchText }" 
-                    SearchCommand="{ Binding SearchMovieCommand }">
-            </SearchBar>
-            <!--ACTORS HORIZONTAL LIST ELEMENT-->
-            <Label 
-                Text="Popular actors"  
-                FontSize="Medium" 
-                FontAttributes="Bold" 
-                VerticalOptions="Start" 
-                HorizontalOptions="Start" 
-                VerticalTextAlignment="Start" 
-                HorizontalTextAlignment="Start" 
-                LineBreakMode="WordWrap"/>
-            <ScrollView
-                Orientation="Horizontal"
-                HorizontalScrollBarVisibility="Never"
-                VerticalOptions="CenterAndExpand"
-                HeightRequest="200">
-                <StackLayout Orientation="Horizontal" 
-                             HeightRequest="100"
-                             Margin="1"
-                             Spacing="2"
-                             Padding="0,5,0,0"
-                             BindableLayout.ItemsSource="{Binding Actors}">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="100" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100" />
-                                </Grid.ColumnDefinitions>
-                                <Image 
-                                    Grid.Row="0" 
-                                    Grid.Column="0" 
-                                    Source="{ Binding Photo }" 
-                                    HorizontalOptions="CenterAndExpand" 
-                                    VerticalOptions="CenterAndExpand"    
-                                    Aspect="Fill" />
-                            </Grid>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </StackLayout>
-            </ScrollView>
-            <!--MOVIE VERTICAL LIST ELEMENT-->
-            <Label 
-                Text="Upcoming movies"  
-                FontSize="Medium" 
-                FontAttributes="Bold" 
-                VerticalOptions="Start" 
-                HorizontalOptions="Start" 
-                VerticalTextAlignment="Start" 
-                HorizontalTextAlignment="Start" 
-                LineBreakMode="WordWrap"/>
+      <StackLayout>
             <ListView  
                     HorizontalOptions="FillAndExpand" 
                     VerticalOptions="StartAndExpand"
@@ -167,6 +104,7 @@
                                             VerticalTextAlignment="Center" 
                                             HorizontalTextAlignment="Center" />
                                     </StackLayout>
+
                                 </Grid>
                             </ViewCell.View>
                         </ViewCell>
@@ -174,5 +112,5 @@
                 </ListView.ItemTemplate>
             </ListView>
         </StackLayout>
-    </ContentPage.Content>
+  </ContentPage.Content>
 </ContentPage>

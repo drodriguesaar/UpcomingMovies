@@ -1,4 +1,5 @@
 ﻿using SQLite;
+using System.Collections.Generic;
 
 namespace UpcomingMovies.Model
 {
@@ -21,5 +22,7 @@ namespace UpcomingMovies.Model
         public string Language { get; set; }
         public string OriginalName { get; set; }
         public string HomePage { get; set; }
+        [Ignore]
+        public List<ImageModel> Images { get; set; }
     }
 }

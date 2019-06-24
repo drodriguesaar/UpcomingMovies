@@ -6,10 +6,10 @@ namespace UpcomingMovies.Service
     {
         public static IService GetService()
         {
-            if (Debugger.IsAttached)
-            {
-                return new MockService();
-            }
+            //if (Debugger.IsAttached)
+            //{
+            //    return new MockService();
+            //}
             return new ResourceService();
         }
     }
