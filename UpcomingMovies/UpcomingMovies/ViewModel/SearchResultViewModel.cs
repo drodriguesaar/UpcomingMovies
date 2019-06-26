@@ -8,23 +8,18 @@ using System.Web;
 using System.Windows.Input;
 using UpcomingMovies.Component;
 using UpcomingMovies.Consts;
+using UpcomingMovies.Infra;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
 using Xamarin.Forms;
 
 namespace UpcomingMovies.ViewModel
 {
-    class SearchResultViewModel : INotifyPropertyChanged
+    class SearchResultViewModel : ViewModelBase
     {
         readonly MovieService _movieService;
         readonly MovieParameter _movieParameter;
         readonly INavigation _navigation;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         bool _IsVisible;
         string _SearchText;
@@ -105,7 +100,7 @@ namespace UpcomingMovies.ViewModel
             this.SearchText = string.Format("Results to {0}", searchText);
             this.IsVisible = false;
 
-            App.Toast.ShortToast(string.Format("Searching by {0}...", searchText));
+            Global.Instance.Toast.ShortToast(string.Format("Searching by {0}...", searchText));
 
             _movieParameter.Page = 1;
             _movieParameter.Query = HttpUtility.UrlEncode(searchText);
@@ -119,7 +114,7 @@ namespace UpcomingMovies.ViewModel
                         var movies = moviesList.Result;
                         if (!movies.Any())
                         {
-                            App.Toast.ShortToast("No movies found...");
+                            Global.Instance.Toast.ShortToast("No movies found...");
                         }
                         else
                         {
@@ -171,7 +166,7 @@ namespace UpcomingMovies.ViewModel
                         var movies = moviesList.Result;
                         if (!movies.Any())
                         {
-                            App.Toast.ShortToast("No more movies...");
+                            Global.Instance.Toast.ShortToast("No more movies...");
                             return;
                         }
                         PopulateListView(movies);

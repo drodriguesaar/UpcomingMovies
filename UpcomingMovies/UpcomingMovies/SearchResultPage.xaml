@@ -12,9 +12,15 @@
     <ContentPage.Resources>
         <converter:ItemTappedEventArgsToItemTappedConverter x:Key="ItemTappedConverter"/>
         <converter:ItemAppearEventArgsToItemAppearConverter x:Key="ItemAppearConverter"/>
+        <converter:BooleanConverter x:Key="BoolConverter" />
     </ContentPage.Resources>
     <ContentPage.Content>
       <StackLayout>
+            <ActivityIndicator IsRunning="{Binding IsVisible, Converter={StaticResource BoolConverter}}" 
+                               IsVisible="{Binding IsVisible, Converter={StaticResource BoolConverter}}" 
+                               HorizontalOptions="CenterAndExpand" 
+                               VerticalOptions="CenterAndExpand">
+            </ActivityIndicator>
             <ListView  
                     HorizontalOptions="FillAndExpand" 
                     VerticalOptions="StartAndExpand"

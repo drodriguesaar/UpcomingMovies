@@ -2,6 +2,7 @@
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Xamarin.Forms;
 
 namespace UpcomingMovies.Droid
 {
@@ -12,8 +13,10 @@ namespace UpcomingMovies.Droid
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
-
+            
             base.OnCreate(savedInstanceState);
+            Forms.SetFlags("CollectionView_Experimental");
+
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
         }

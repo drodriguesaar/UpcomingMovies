@@ -20,16 +20,12 @@ namespace UpcomingMovies
         }
         void SetPageData()
         {
-            
-
             BindingContext = new UpcomingMoviesViewModel(Navigation);
-
         }
 
         protected override void OnAppearing()
         {
             ((UpcomingMoviesViewModel)BindingContext).GetMovies();
-            ((UpcomingMoviesViewModel)BindingContext).GetActors();
             base.OnAppearing();
         }
     }

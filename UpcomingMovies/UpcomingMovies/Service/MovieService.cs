@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UpcomingMovies.Consts;
 using UpcomingMovies.DTO;
 using UpcomingMovies.Enums;
+using UpcomingMovies.Infra;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
 
@@ -13,45 +14,38 @@ namespace UpcomingMovies.Component
 {
     public class MovieService
     {
-
-        public MovieService()
-        {
-
-        }
         internal async Task<List<MovieModel>> GetMovies(MovieParameter movieParameter)
         {
             var moviesList = new List<MovieModel>();
-
             try
             {
                 var resource = movieParameter.Resource;
-                movieParameter.Resource = null;
-                var response = await App.BaseService.Consume<MovieParameter, ResponseListDTO<List<MovieDTO>>>(movieParameter, resource, HTTPMethodEnum.GET);
+                var response = await Global.Instance.BaseService.Consume<MovieParameter, ResponseListDTO<List<MovieDTO>>>(movieParameter, resource, HTTPMethodEnum.GET);
                 moviesList = response.results.Select(movie => new MovieModel
                 {
                     ReleaseDate = string.IsNullOrEmpty(movie.release_date) ? "not available" : DateTime.Parse(movie.release_date).ToShortDateString(),
                     Name = movie.title,
                     OverView = BuildAbreviatedMovieOverView(movie.overview),
-                    Poster = BuildPosterUri(movie.poster_path),
+                    Poster = movie.poster_path.BuildImageURI(),
                     Score = movie.vote_average,
                     Votes = movie.vote_count,
                     Id = movie.id
                 }).ToList();
             }
-            catch (Exception ex)
+            catch
             {
             }
             return moviesList;
         }
         internal async Task<MovieModel> GetMovie(MovieParameter movieParameter)
         {
-            var movieresource = string.Format(MoviesApiResourcesConsts.MOVIE, movieParameter.Id);
-            var movieID = movieParameter.Id;
-            movieParameter.Id = null;
             MovieModel movieModel = new MovieModel();
             try
             {
-                var response = await App.BaseService.Consume<MovieParameter, MovieDTO>(movieParameter, movieresource, HTTPMethodEnum.GET);
+                var movieresource = string.Format(MoviesApiResourcesConsts.MOVIE, movieParameter.Id);
+                var movieID = movieParameter.Id;
+                movieParameter.Id = null;
+                var response = await Global.Instance.BaseService.Consume<MovieParameter, MovieDTO>(movieParameter, movieresource, HTTPMethodEnum.GET);
 
                 var releaseDate = new DateTime();
                 DateTime.TryParse(response.release_date, out releaseDate);
@@ -63,7 +57,7 @@ namespace UpcomingMovies.Component
                 movieModel.Name = response.title;
                 movieModel.OverView = response.overview;
                 movieModel.Genres = genres;
-                movieModel.Poster = BuildPosterUri(response.poster_path, "500");
+                movieModel.Poster = response.poster_path.BuildImageURI(size: "500");
                 movieModel.Id = response.id;
                 movieModel.Score = response.vote_average;
                 movieModel.Votes = response.vote_count;
@@ -71,31 +65,24 @@ namespace UpcomingMovies.Component
                 movieModel.HomePage = response.homepage;
 
                 movieresource = string.Format(MoviesApiResourcesConsts.MOVIE_IMAGES, movieID);
-                var imagesresponse = await App.BaseService.Consume<MovieParameter, MovieDTO>(movieParameter, movieresource, HTTPMethodEnum.GET);
+                var imagesresponse = await Global.Instance.BaseService.Consume<MovieParameter, MovieDTO>(movieParameter, movieresource, HTTPMethodEnum.GET);
                 movieModel.Images.AddRange(imagesresponse.posters.Select(p => new ImageModel
                 {
                     Height = p.height,
                     Width = p.width,
-                    Path = BuildPosterUri(p.file_path)
+                    Path = p.file_path.BuildImageURI()
                 }));
-
-
             }
             catch (Exception ex)
             {
                 movieModel.Error = true;
                 movieModel.ErrorMessage = ex.Message;
             }
-            return movieModel;
-        }
-        string BuildPosterUri(string posterPath, string size = "200")
-        {
-            if (string.IsNullOrEmpty(posterPath))
+            finally
             {
-                return "https://tinyurl.com/y2eejo2m";
-            }
 
-            return string.Format("https://image.tmdb.org/t/p/w{1}/{0}", posterPath, size);
+            }
+            return movieModel;
         }
         string BuildAbreviatedMovieOverView(string movieDescription)
         {

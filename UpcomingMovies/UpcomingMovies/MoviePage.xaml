@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:UpcomingMovies.ViewModel"
              x:Class="UpcomingMovies.MoviePage"
-             Title="Detail">
+             Title="Movie details">
     <ContentPage.BindingContext>
         <local:MovieDetailViewModel />
     </ContentPage.BindingContext>

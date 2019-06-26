@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace UpcomingMovies.ViewModel
 {
-    public class MovieDetailViewModel : INotifyPropertyChanged
+    public class MovieDetailViewModel : ViewModelBase
     {
         MovieService _movieComponent;
         MovieParameter _movieParameter;
@@ -38,16 +38,13 @@ namespace UpcomingMovies.ViewModel
                 }
             }
         }
-        public event PropertyChangedEventHandler PropertyChanged;
+
         public MovieDetailViewModel()
         {
             _movieParameter = new MovieParameter();
             _movieComponent = new MovieService();
         }
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+
         public void GetMovieDetails(int id)
         {
             _movieParameter.Id = id;

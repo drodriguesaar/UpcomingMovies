@@ -7,6 +7,7 @@ using System.Web;
 using System.Windows.Input;
 using UpcomingMovies.Component;
 using UpcomingMovies.Consts;
+using UpcomingMovies.Infra;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
 using UpcomingMovies.Service;
@@ -14,7 +15,7 @@ using Xamarin.Forms;
 
 namespace UpcomingMovies.ViewModel
 {
-    public class UpcomingMoviesViewModel : INotifyPropertyChanged
+    public class UpcomingMoviesViewModel : ViewModelBase
     {
         readonly INavigation _navigation;
         readonly MovieService _movieService;
@@ -34,15 +35,27 @@ namespace UpcomingMovies.ViewModel
                 }
             }
         }
-        public bool IsVisible
+        public bool IsVisibleMovies
         {
-            get { return _IsVisible; }
+            get { return _IsVisibleMovies; }
             set
             {
-                if (_IsVisible != value)
+                if (_IsVisibleMovies != value)
                 {
-                    _IsVisible = value;
-                    OnPropertyChanged("IsVisible");
+                    _IsVisibleMovies = value;
+                    OnPropertyChanged("IsVisibleMovies");
+                }
+            }
+        }
+        public bool IsVisibleActors
+        {
+            get { return _IsVisibleActors; }
+            set
+            {
+                if (_IsVisibleActors != value)
+                {
+                    _IsVisibleActors = value;
+                    OnPropertyChanged("IsVisibleActors");
                 }
             }
         }
@@ -70,7 +83,7 @@ namespace UpcomingMovies.ViewModel
                 }
             }
         }
-        public bool NavigatedToDetails { get; set; }
+
         public ObservableCollection<MovieModel> Movies
         {
             get { return _Movies; }
@@ -121,13 +134,15 @@ namespace UpcomingMovies.ViewModel
         }
 
         bool _IsReady;
-        bool _IsVisible;
+        bool _IsVisibleMovies;
+        bool _IsVisibleActors;
         bool _IsRefreshing;
         string _SearchText;
         ObservableCollection<MovieModel> _Movies;
         ObservableCollection<MovieModel> _NowPlaying;
         ObservableCollection<GenreModel> _Genres;
         ObservableCollection<ActorModel> _Actors;
+
         public UpcomingMoviesViewModel()
         {
         }
@@ -149,20 +164,20 @@ namespace UpcomingMovies.ViewModel
             MovieAppearCommand = new Command<MovieModel>(MovieAppear);
             PullToRefreshCommand = new Command(PullToRefresh);
             GetMoviesByGenreCommand = new Command<GenreModel>(GetMoviesByGenre);
+            GetActorCommand = new Command<ActorModel>(GetActor);
         }
 
+        public ICommand GetActorCommand { get; set; }
         public ICommand GetMovieCommand { get; set; }
         public ICommand GetMoviesByGenreCommand { get; set; }
         public ICommand SearchMovieCommand { get; set; }
         public ICommand MovieAppearCommand { get; set; }
         public ICommand PullToRefreshCommand { get; set; }
-        public event PropertyChangedEventHandler PropertyChanged;
 
         #region Movies region
         void SearchMovie()
         {
-            NavigatedToDetails = true;
-            _navigation.PushAsync(new SearchResultPage { SearchText = this.SearchText });
+            _navigation.PushAsync(new SearchResultPage { SearchText = this.SearchText }, true);
             this.SearchText = string.Empty;
         }
         void PullToRefresh()
@@ -183,7 +198,7 @@ namespace UpcomingMovies.ViewModel
                         var movies = moviesList.Result;
                         if (!movies.Any())
                         {
-                            App.Toast.ShortToast("No movies found...");
+                            Global.Instance.Toast.ShortToast("No movies found...");
                         }
                         else
                         {
@@ -218,7 +233,7 @@ namespace UpcomingMovies.ViewModel
                         var movies = moviesList.Result;
                         if (!movies.Any())
                         {
-                            App.Toast.ShortToast("No more movies...");
+                            Global.Instance.Toast.ShortToast("No more movies...");
                             return;
                         }
                         PopulateMoviesListView(movies);
@@ -229,8 +244,12 @@ namespace UpcomingMovies.ViewModel
 
         public void GetMovies()
         {
-            this.IsVisible = false;
-            App.DataBase.GetMovieDataCacheTimeSpanAsync().ContinueWith((movieCachedDataResult) =>
+            this.IsVisibleActors = false;
+            this.IsVisibleMovies = false;
+
+            this.GetActors();
+
+            Global.Instance.DataBase.GetMovieDataCacheTimeSpanAsync().ContinueWith((movieCachedDataResult) =>
             {
                 if (movieCachedDataResult.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
@@ -241,7 +260,7 @@ namespace UpcomingMovies.ViewModel
 
                     if (isBetweenTimeSpan)
                     {
-                        App.DataBase.GetMoviesAsync().ContinueWith((moviesCachedResult) =>
+                        Global.Instance.DataBase.GetMoviesAsync().ContinueWith((moviesCachedResult) =>
                         {
                             if (moviesCachedResult.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
                             {
@@ -257,7 +276,7 @@ namespace UpcomingMovies.ViewModel
                     {
                         GetUpComingMovies();
                     }
-                    this.IsVisible = true;
+                    this.IsVisibleMovies = true;
                 }
             });
         }
@@ -274,7 +293,7 @@ namespace UpcomingMovies.ViewModel
                             var movies = moviesList.Result;
                             if (!movies.Any())
                             {
-                                App.Toast.ShortToast("No movies found...");
+                                Global.Instance.Toast.ShortToast("No movies found...");
 
                             }
                             else
@@ -289,8 +308,7 @@ namespace UpcomingMovies.ViewModel
         }
         void GetMovie(MovieModel movie)
         {
-            NavigatedToDetails = true;
-            _navigation.PushAsync(new MoviePage { MovieID = movie.Id });
+            _navigation.PushAsync(new MoviePage { MovieID = movie.Id }, true);
         }
         void PopulateMoviesListView(List<MovieModel> movies)
         {
@@ -306,32 +324,32 @@ namespace UpcomingMovies.ViewModel
         void SetMovieCacheTimeSpanData()
         {
             var movieCacheTimeSpan = DateTime.Now;
-            App.DataBase.InsertMovieDataCacheTimeSpanAsync(movieCacheTimeSpan, movieCacheTimeSpan.AddDays(1)).ContinueWith((result) =>
+            Global.Instance.DataBase.InsertMovieDataCacheTimeSpanAsync(movieCacheTimeSpan, movieCacheTimeSpan.AddDays(1)).ContinueWith((result) =>
             {
                 if (result.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
-                    App.DataBase.InsertMoviesAsync(Movies.ToList()).Wait();
+                    Global.Instance.DataBase.InsertMoviesAsync(Movies.ToList()).Wait();
                 }
             });
         }
         void UpdateMovieCacheTimeSpanData()
         {
-            App.DataBase.DeleteMoviesAsync().ContinueWith((resultDelete) =>
+            Global.Instance.DataBase.DeleteMoviesAsync().ContinueWith((resultDelete) =>
             {
                 if (resultDelete.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
                     var movieCacheTimeSpan = DateTime.Now;
-                    App.DataBase.UpdateMovieDataCacheTimeSpanAsync(movieCacheTimeSpan, movieCacheTimeSpan.AddDays(1)).ContinueWith((resultUpdate) =>
+                    Global.Instance.DataBase.UpdateMovieDataCacheTimeSpanAsync(movieCacheTimeSpan, movieCacheTimeSpan.AddDays(1)).ContinueWith((resultUpdate) =>
                     {
-                        App.DataBase.InsertMoviesAsync(Movies.ToList()).Wait();
+                        Global.Instance.DataBase.InsertMoviesAsync(Movies.ToList()).Wait();
                     });
                 }
             });
-        } 
+        }
         #endregion
 
         #region Now playing region
-        public void GetNowPlaying()
+        void GetNowPlaying()
         {
             _movieParameter.Resource = MoviesApiResourcesConsts.NOW_PLAYING;
             _movieParameter.Page = 1;
@@ -344,7 +362,7 @@ namespace UpcomingMovies.ViewModel
                         var movies = nowPlayingList.Result;
                         if (!movies.Any())
                         {
-                            App.Toast.ShortToast("No movies found...");
+                            Global.Instance.Toast.ShortToast("No movies found...");
 
                         }
                         else
@@ -362,13 +380,13 @@ namespace UpcomingMovies.ViewModel
             {
                 NowPlaying.Add(nowplaying);
             });
-        } 
+        }
         #endregion
 
         #region Genres region
         public void GetGenres()
         {
-            _genreService.GetGenres().ContinueWith((genresList) =>
+            _genreService.GetGenres(_movieParameter).ContinueWith((genresList) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -384,7 +402,7 @@ namespace UpcomingMovies.ViewModel
         void GetMoviesByGenre(GenreModel genre)
         {
 
-        } 
+        }
         void PopulateGenresListView(List<GenreModel> genres)
         {
             genres.ForEach(genre =>
@@ -395,9 +413,9 @@ namespace UpcomingMovies.ViewModel
         #endregion
 
         #region Actors region
-        public void GetActors()
+        void GetActors()
         {
-            _peopleService.GetActors().ContinueWith((actorsList) =>
+            _peopleService.GetActors(_movieParameter).ContinueWith((actorsList) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -406,9 +424,14 @@ namespace UpcomingMovies.ViewModel
                         var actors = actorsList.Result;
                         Actors.Clear();
                         PopulateActorsListView(actors);
+                        this.IsVisibleActors = true;
                     }
                 });
             });
+        }
+        void GetActor(ActorModel actor)
+        {
+            _navigation.PushAsync(new ActorPage { ActorID = actor.ID }, true);
         }
         void PopulateActorsListView(List<ActorModel> actors)
         {
@@ -416,12 +439,7 @@ namespace UpcomingMovies.ViewModel
             {
                 Actors.Add(actor);
             });
-        } 
-        #endregion
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
     }
 }

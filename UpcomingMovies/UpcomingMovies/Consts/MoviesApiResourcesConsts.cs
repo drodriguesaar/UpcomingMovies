@@ -14,6 +14,8 @@ namespace UpcomingMovies.Consts
         public const string GENRES = "genre/movie/list";
         public const string MOVIE_IMAGES = "movie/{0}/images";
         public const string NOW_PLAYING = "movie/now_playing";
+
         public const string POPULAR_ACTORS = "person/popular";
+        public const string ACTOR = "person/{0}";
     }
 }
