@@ -17,10 +17,7 @@ namespace UpcomingMovies
         {
             InitializeComponent();
 
-            var navigationPage = new NavigationPage(new UpcomingMoviesPage());
-            navigationPage.BarBackgroundColor = Color.FromHex("#431771");
-            navigationPage.BarTextColor = Color.FromHex("#ffffff");
-            MainPage = navigationPage;
+            MainPage = new PrincipalTabbedPage();
         }
 
         protected override void OnStart()

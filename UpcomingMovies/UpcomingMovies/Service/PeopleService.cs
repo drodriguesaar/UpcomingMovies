@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UpcomingMovies.Consts;
@@ -16,13 +17,15 @@ namespace UpcomingMovies.Service
             var actorList = new List<ActorModel>();
             try
             {
-                var resource = MoviesApiResourcesConsts.POPULAR_ACTORS;
+                var resource = movieParameter.Resource;
                 var response = await Global.Instance.BaseService.Consume<MovieParameter, ResponseListDTO<List<PeopleDTO>>>(movieParameter, resource, Enums.HTTPMethodEnum.GET);
                 actorList = response.results.Select(people => new ActorModel
                 {
                     Name = people.name,
                     Photo = people.profile_path.BuildImageURI(),
-                    ID = people.id
+                    ID = people.id,
+                    Department = people.known_for_department,
+                    DOB = people.birthday
                 }).ToList();
             }
             catch
@@ -40,6 +43,14 @@ namespace UpcomingMovies.Service
                 actorModel.Name = response.name;
                 actorModel.Photo = response.profile_path.BuildImageURI();
                 actorModel.ID = response.id;
+                actorModel.Bio = string.Format("Biography: {0}", (string.IsNullOrEmpty(response.biography) ? "Not available" : response.biography));
+                actorModel.Department = string.Format("Known for: {0}", response.known_for_department);
+                actorModel.DOB = string.Format("Birthday: {0}", Convert.ToDateTime(response.birthday).ToLongDateString());
+                actorModel.POB = string.Format("Place of birth: {0}", response.place_of_birth);
+                actorModel.Adult = response.adult;
+                actorModel.Gender = string.Format("Gender: {0}", (response.gender.Equals(1) ? "Female" : "Male"));
+                actorModel.HomePage = response.homepage;
+
             }
             catch
             {

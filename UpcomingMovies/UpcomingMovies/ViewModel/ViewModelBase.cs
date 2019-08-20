@@ -7,6 +7,8 @@ namespace UpcomingMovies.ViewModel
 {
    public class ViewModelBase : INotifyPropertyChanged
     {
+        protected bool _Navigated { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {

@@ -20,6 +20,8 @@ namespace UpcomingMovies
         void SetConfiguration()
         {
             Util.SetPagePadding(this);
+            NavigationPage.SetHasBackButton(this, false);
+            NavigationPage.SetHasNavigationBar(this, false);
         }
         void SetPageData()
         {

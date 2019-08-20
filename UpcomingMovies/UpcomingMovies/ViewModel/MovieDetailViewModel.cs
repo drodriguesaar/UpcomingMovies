@@ -12,6 +12,20 @@ namespace UpcomingMovies.ViewModel
         MovieService _movieComponent;
         MovieParameter _movieParameter;
         MovieModel _Movie;
+        Color _Color;
+        public Color Color
+        {
+            get { return _Color; }
+            set
+            {
+                if (_Color != value)
+                {
+                    _Color = value;
+                    OnPropertyChanged("Color");
+                }
+            }
+        }
+
         bool _IsReady;
 
         public MovieModel Movie
@@ -43,21 +57,25 @@ namespace UpcomingMovies.ViewModel
         {
             _movieParameter = new MovieParameter();
             _movieComponent = new MovieService();
+            
         }
 
         public void GetMovieDetails(int id)
         {
+            IsReady = false;
+            Color = Color.Silver;
             _movieParameter.Id = id;
-            _movieComponent.GetMovie(_movieParameter).ContinueWith((movie) =>
+            Device.BeginInvokeOnMainThread(() =>
             {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    if (movie.Status == TaskStatus.RanToCompletion)
+                _movieComponent.GetMovie(_movieParameter).ContinueWith((movie) =>
                     {
-                        Movie = movie.Result;
-                        IsReady = true;
-                    }
-                });
+                        if (movie.Status == TaskStatus.RanToCompletion)
+                        {
+                            Movie = movie.Result;
+                            IsReady = true;
+                            Color = Color.Transparent;
+                        }
+                    });
             });
         }
     }

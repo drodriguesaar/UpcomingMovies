@@ -3,10 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:UpcomingMovies.ViewModel"
              x:Class="UpcomingMovies.MoviePage"
-             Title="Movie details">
+             xmlns:converter="clr-namespace:UpcomingMovies.Converter">
     <ContentPage.BindingContext>
         <local:MovieDetailViewModel />
     </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <converter:ScoreColorConverter x:Key="ScoreColorConverter"/>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <ScrollView 
             IsVisible="{Binding IsReady}"
@@ -20,10 +23,12 @@
                 VerticalOptions="FillAndExpand">
                 <Image 
                     Source="{ Binding Poster }"
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="FillAndExpand"
+                    HorizontalOptions="Center" 
+                    VerticalOptions="Center"
+                    HeightRequest="255"
+                    WidthRequest="170"
                     Aspect="AspectFit"
-                    Margin="0,5,0,0"/>
+                    Margin="0,5,0,0" BackgroundColor="{Binding Color}"/>
                 <Label 
                     Text="{ Binding Name }"
                     HorizontalOptions="FillAndExpand" 
@@ -31,7 +36,7 @@
                     HorizontalTextAlignment="Center" 
                     VerticalTextAlignment="Center" 
                     FontSize="Large"
-                    FontAttributes="Bold" />
+                    FontAttributes="Bold" BackgroundColor="{Binding Color}" />
                 <Label 
                     Text="{ Binding ReleaseDate, StringFormat='Release Date: {0}' }"
                     HorizontalOptions="FillAndExpand" 
@@ -45,14 +50,14 @@
                     VerticalOptions="FillAndExpand" 
                     HorizontalTextAlignment="Center" 
                     VerticalTextAlignment="Center" 
-                    FontSize="Small" />
+                    FontSize="Small"  BackgroundColor="{Binding Color}" />
                 <Label 
                     Text="{ Binding Language, StringFormat='Language: {0}' }"
                     HorizontalOptions="FillAndExpand" 
                     VerticalOptions="FillAndExpand" 
                     HorizontalTextAlignment="Center" 
                     VerticalTextAlignment="Center" 
-                    FontSize="Small" />
+                    FontSize="Small"  BackgroundColor="{Binding Color}" />
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -71,7 +76,7 @@
                         HorizontalTextAlignment="Center" 
                         VerticalTextAlignment="Center" 
                         FontSize="Large"
-                        FontAttributes="Bold" />
+                        FontAttributes="Bold"  BackgroundColor="{Binding Color}" TextColor="{Binding Score, Converter={StaticResource ScoreColorConverter}}" />
                     <Label 
                         Text="{ Binding Votes }"
                         Grid.Row="0"
@@ -81,7 +86,7 @@
                         HorizontalTextAlignment="Center" 
                         VerticalTextAlignment="Center" 
                         FontSize="Large"
-                        FontAttributes="Bold" />
+                        FontAttributes="Bold"  BackgroundColor="{Binding Color}" />
                     <Label 
                         Text="Score"
                         Grid.Row="1"
@@ -90,7 +95,7 @@
                         VerticalOptions="CenterAndExpand" 
                         HorizontalTextAlignment="Center" 
                         VerticalTextAlignment="Center" 
-                        FontSize="Small" />
+                        FontSize="Small"  BackgroundColor="{Binding Color}" />
                     <Label 
                         Text="Votes"
                         Grid.Row="1"
@@ -99,7 +104,7 @@
                         VerticalOptions="CenterAndExpand" 
                         HorizontalTextAlignment="Center" 
                         VerticalTextAlignment="Center" 
-                        FontSize="Small" />
+                        FontSize="Small"  BackgroundColor="{Binding Color}" />
                 </Grid>
                 <Label 
                     Text="Overview"
@@ -108,14 +113,14 @@
                     HorizontalTextAlignment="Center" 
                     VerticalTextAlignment="Center" 
                     FontSize="Medium" 
-                    FontAttributes="Bold"/>
+                    FontAttributes="Bold"  BackgroundColor="{Binding Color}" />
                 <Label 
                     Text="{ Binding OverView }"
                     HorizontalOptions="FillAndExpand" 
                     VerticalOptions="FillAndExpand" 
                     HorizontalTextAlignment="Center" 
                     VerticalTextAlignment="Center" 
-                    FontSize="Medium" />
+                    FontSize="Medium"  BackgroundColor="{Binding Color}"/>
                 <ScrollView
                     Orientation="Horizontal">
                     <StackLayout

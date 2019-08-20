@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using UpcomingMovies.Consts;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
 using UpcomingMovies.Service;
@@ -12,13 +13,30 @@ namespace UpcomingMovies.ViewModel
     public class ActorDetailViewModel : ViewModelBase
     {
         ActorModel _Actor;
+        bool _IsVisible;
         PeopleService _peopleService;
         MovieParameter _movieParameter;
+
+
         public ActorDetailViewModel()
         {
             _peopleService = new PeopleService();
             _movieParameter = new MovieParameter();
         }
+
+        public bool IsVisible
+        {
+            get { return _IsVisible; }
+            set
+            {
+                if (_IsVisible != value)
+                {
+                    _IsVisible = value;
+                    OnPropertyChanged("IsVisible");
+                }
+            }
+        }
+
         public ActorModel Actor
         {
             get { return _Actor; }
@@ -33,16 +51,19 @@ namespace UpcomingMovies.ViewModel
         }
         public void GetActorDetail(int id)
         {
+            IsVisible = false;
             _movieParameter.Id = id;
-            _peopleService.GetActor(_movieParameter).ContinueWith((actor) =>
+            _movieParameter.Resource = MoviesApiResourcesConsts.SEARCH_PERSON;
+            Device.BeginInvokeOnMainThread(() =>
             {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    if (actor.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                _peopleService.GetActor(_movieParameter).ContinueWith((actor) =>
                     {
-                        Actor = actor.Result;
-                    }
-                });
+                        if (actor.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                        {
+                            Actor = actor.Result;
+                            IsVisible = true;
+                        }
+                    });
             });
         }
     }
