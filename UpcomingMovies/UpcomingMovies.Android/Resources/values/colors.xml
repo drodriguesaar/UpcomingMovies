@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="launcher_background">#ffe8ff</color>
-    <color name="colorPrimary">#6919b9e6</color>
-    <color name="colorPrimaryDark">#330066e6</color>
-    <color name="colorAccent">#ffe8ff</color>
-    <color name="status_bar">#330066e6</color>
-    <color name="accent">#330066e6</color>
+    <color name="launcher_background">#D19DD1</color>
+    <color name="colorPrimary">#C43EC4</color>
+    <color name="colorPrimaryDark">#9B209B</color>
+    <color name="colorAccent">#A662A6</color>
+    <color name="status_bar">#9B209B</color>
+    <color name="accent">#A662A6</color>
 </resources>

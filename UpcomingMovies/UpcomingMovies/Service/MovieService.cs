@@ -1,42 +1,31 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UpcomingMovies.Consts;
 using UpcomingMovies.DTO;
 using UpcomingMovies.Enums;
+using UpcomingMovies.Infra;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
-using UpcomingMovies.Service;
 
 namespace UpcomingMovies.Component
 {
     public class MovieService
     {
-        IService _baseService;
-        public MovieService()
-        {
-
-        }
-        public MovieService(IService service)
-        {
-            _baseService = service;
-        }
-        public string Resource { get; set; }
         internal async Task<List<MovieModel>> GetMovies(MovieParameter movieParameter)
         {
-            _baseService = new BaseService(Resource);
             var moviesList = new List<MovieModel>();
             try
             {
-                var response = await _baseService.Consume<MovieParameter, ResponseListDTO<List<MovieDTO>>>(movieParameter, HTTPMethodEnum.GET);
+                var resource = movieParameter.Resource;
+                var response = await Global.Instance.BaseService.Consume<MovieParameter, ResponseListDTO<List<MovieDTO>>>(movieParameter, resource, HTTPMethodEnum.GET);
                 moviesList = response.results.Select(movie => new MovieModel
                 {
                     ReleaseDate = string.IsNullOrEmpty(movie.release_date) ? "not available" : DateTime.Parse(movie.release_date).ToShortDateString(),
                     Name = movie.title,
                     OverView = BuildAbreviatedMovieOverView(movie.overview),
-                    Poster = BuildPosterUri(movie.poster_path),
+                    Poster = movie.poster_path.BuildImageURI(),
                     Score = movie.vote_average,
                     Votes = movie.vote_count,
                     Id = movie.id
@@ -49,43 +38,50 @@ namespace UpcomingMovies.Component
         }
         internal async Task<MovieModel> GetMovie(MovieParameter movieParameter)
         {
-            var movieresource = string.Format(MoviesApiResourcesConsts.MOVIE, movieParameter.Id);
-            movieParameter.Id = null;
-            _baseService = new BaseService(movieresource);
             MovieModel movieModel = new MovieModel();
             try
             {
-                var response = await _baseService.Consume<MovieParameter, MovieDTO>(movieParameter, HTTPMethodEnum.GET);
+                var movieresource = string.Format(MoviesApiResourcesConsts.MOVIE, movieParameter.Id);
+                var movieID = movieParameter.Id;
+                movieParameter.Id = null;
+                var response = await Global.Instance.BaseService.Consume<MovieParameter, MovieDTO>(movieParameter, movieresource, HTTPMethodEnum.GET);
+
                 var releaseDate = new DateTime();
                 DateTime.TryParse(response.release_date, out releaseDate);
-                var releaseDateFormatted = releaseDate == DateTime.MinValue ? string.Empty : DateTime.Parse(response.release_date).ToShortDateString();
+                var releaseDateFormatted = releaseDate == DateTime.MinValue ? string.Empty : releaseDate.ToShortDateString();
+
+                var genres = response.genres == null ? "Not available" : string.Join(", ", response.genres.Select(g => g.name));
 
                 movieModel.ReleaseDate = releaseDateFormatted;
                 movieModel.Name = response.title;
                 movieModel.OverView = response.overview;
-                movieModel.Genres = string.Join(", ", response.genres.Select(g => g.name));
-                movieModel.Poster = BuildPosterUri(response.poster_path,"500");
+                movieModel.Genres = genres;
+                movieModel.Poster = response.poster_path.BuildImageURI(size: "500");
                 movieModel.Id = response.id;
                 movieModel.Score = response.vote_average;
                 movieModel.Votes = response.vote_count;
                 movieModel.Language = response.original_language;
                 movieModel.HomePage = response.homepage;
+
+                movieresource = string.Format(MoviesApiResourcesConsts.MOVIE_IMAGES, movieID);
+                var imagesresponse = await Global.Instance.BaseService.Consume<MovieParameter, MovieDTO>(movieParameter, movieresource, HTTPMethodEnum.GET);
+                movieModel.Images.AddRange(imagesresponse.posters.Select(p => new ImageModel
+                {
+                    Height = p.height,
+                    Width = p.width,
+                    Path = p.file_path.BuildImageURI()
+                }));
             }
             catch (Exception ex)
             {
                 movieModel.Error = true;
                 movieModel.ErrorMessage = ex.Message;
             }
-            return movieModel;
-        }
-        string BuildPosterUri(string posterPath, string size = "200")
-        {
-            if (string.IsNullOrEmpty(posterPath))
+            finally
             {
-                return "https://tinyurl.com/y2eejo2m";
-            }
 
-            return string.Format("https://image.tmdb.org/t/p/w{1}/{0}", posterPath, size);
+            }
+            return movieModel;
         }
         string BuildAbreviatedMovieOverView(string movieDescription)
         {

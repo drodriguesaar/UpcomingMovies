@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="UpcomingMovies.SearchActorsResultPage"
+             xmlns:local="clr-namespace:UpcomingMovies.ViewModel"
+             xmlns:behavior="clr-namespace:UpcomingMovies.Behavior"
+             xmlns:converter="clr-namespace:UpcomingMovies.Converter">
+    <ContentPage.BindingContext>
+        <local:SearchActorsResultViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <converter:ItemTappedEventArgsToItemTappedConverter x:Key="ItemTappedConverter"/>
+        <converter:ItemAppearEventArgsToItemAppearConverter x:Key="ItemAppearConverter"/>
+        <converter:BooleanConverter x:Key="BoolConverter" />
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout>
+            <ActivityIndicator IsRunning="{Binding IsVisible, Converter={StaticResource BoolConverter}}" 
+                               IsVisible="{Binding IsVisible, Converter={StaticResource BoolConverter}}" 
+                               HorizontalOptions="CenterAndExpand" 
+                               VerticalOptions="CenterAndExpand">
+            </ActivityIndicator>
+            <Label Text="{Binding SearchText }"></Label>
+            <ListView  
+                    HorizontalOptions="FillAndExpand" 
+                    VerticalOptions="StartAndExpand"
+                    IsVisible="{ Binding IsVisible }"
+                    ItemsSource="{ Binding Actors }"
+                    HasUnevenRows="True"
+                    IsPullToRefreshEnabled="True">
+                <ListView.Behaviors>
+                    <behavior:EventToCommandBehavior EventName="ItemTapped" Command="{ Binding GetActorCommand }" Converter="{ StaticResource ItemTappedConverter }"/>
+                    <behavior:EventToCommandBehavior EventName="ItemAppearing" Command="{ Binding ActorAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="100" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="75" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image 
+                                        Grid.Row="0" 
+                                        Grid.Column="0" 
+                                        Source="{ Binding Photo }" 
+                                        HorizontalOptions="CenterAndExpand" 
+                                        VerticalOptions="CenterAndExpand"    
+                                        Aspect="Fill" />
+                                    <StackLayout
+                                        Grid.Column="1"
+                                        Grid.Row="0" Spacing="2">
+                                        <Label 
+                                                Text="{ Binding Name }"  
+                                                FontSize="Medium" 
+                                                FontAttributes="Bold" 
+                                                VerticalOptions="Start" 
+                                                HorizontalOptions="Start" 
+                                                VerticalTextAlignment="Start" 
+                                                HorizontalTextAlignment="Start" 
+                                                LineBreakMode="WordWrap"/>
+                                    </StackLayout>
+                                    <StackLayout
+                                        Grid.Column="2"
+                                        Grid.Row="0">
+
+                                    </StackLayout>
+                                </Grid>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

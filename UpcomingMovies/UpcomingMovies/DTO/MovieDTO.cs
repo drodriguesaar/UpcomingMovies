@@ -2,13 +2,16 @@
 
 namespace UpcomingMovies.DTO
 {
-    internal class MovieDTO
+    public class MovieDTO
     {
 
         public MovieDTO()
         {
             production_companies = new List<CompanyDTO>();
             production_countries = new List<CountryDTO>();
+            genres = new List<GenreDTO>();
+            backdrops = new List<ImageDTO>();
+            posters = new List<ImageDTO>();
         }
 
         public string backdrop_path { get; set; }
@@ -27,9 +30,12 @@ namespace UpcomingMovies.DTO
         public string status { get; set; }
         public string imdb_id { get; set; }
         public bool adult { get; set; }
+        public bool video { get; set; }
         public string original_language { get; set; }
         public List<CompanyDTO> production_companies { get; set; }
         public List<CountryDTO> production_countries { get; set; }
         public List<GenreDTO> genres { get; set; }
+        public List<ImageDTO> backdrops { get; set; }
+        public List<ImageDTO> posters { get; set; }
     }
 }

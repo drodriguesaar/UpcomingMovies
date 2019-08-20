@@ -3,6 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
+
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpcomingMovies.Android", "UpcomingMovies\UpcomingMovies.Android\UpcomingMovies.Android.csproj", "{C05391D1-DA6E-4BAC-9438-4E99DE62D7AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpcomingMovies.iOS", "UpcomingMovies\UpcomingMovies.iOS\UpcomingMovies.iOS.csproj", "{EEC64558-4246-46D7-8389-9ED3589807BF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpcomingMovies", "UpcomingMovies\UpcomingMovies\UpcomingMovies.csproj", "{EBE80EBB-0FA6-4B97-BB8B-552AC29BBDAB}"
+EndProject
+
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
