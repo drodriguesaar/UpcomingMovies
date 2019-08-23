@@ -1,6 +1,4 @@
-﻿using System;
-using UpcomingMovies.Dependency;
-using UpcomingMovies.Infra;
+﻿using UpcomingMovies.Infra;
 using UpcomingMovies.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -25,7 +23,7 @@ namespace UpcomingMovies
         }
         void SetPageData()
         {
-            BindingContext = new MovieDetailViewModel();
+            BindingContext = new MovieDetailViewModel(this.Navigation);
         }
         protected override void OnAppearing()
         {
@@ -33,7 +31,7 @@ namespace UpcomingMovies
             {
                 ((MovieDetailViewModel)BindingContext).GetMovieDetails(MovieID);
             }
-            catch (Exception)
+            catch
             {
                 Global.Instance.Toast.ShortToast("Heck, this was unexpected...");
             }

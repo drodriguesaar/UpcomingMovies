@@ -18,8 +18,7 @@ namespace UpcomingMovies.ViewModel
     {
         readonly PeopleService _peopleService;
         readonly MovieParameter _movieParameter;
-        readonly INavigation _navigation;
-
+        
         ObservableCollection<ActorModel> _Actors;
         public ObservableCollection<ActorModel> Actors
         {
@@ -84,7 +83,7 @@ namespace UpcomingMovies.ViewModel
         }
         public SearchActorsResultViewModel(INavigation navigation)
         {
-            _navigation = navigation;
+            _Navigation = navigation;
             _movieParameter = new MovieParameter();
             _peopleService = new PeopleService();
             Actors = new ObservableCollection<ActorModel>();
@@ -134,7 +133,7 @@ namespace UpcomingMovies.ViewModel
         void GetActor(ActorModel actorModel)
         {
             _Navigated = true;
-            _navigation.PushModalAsync(new ActorPage { ActorID = actorModel.ID }, true);
+            _Navigation.PushModalAsync(new ActorPage { ActorID = actorModel.ID }, true);
         }
 
         void ActorAppear(ActorModel actorModel)

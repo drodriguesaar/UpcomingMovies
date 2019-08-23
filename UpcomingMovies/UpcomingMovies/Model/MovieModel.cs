@@ -9,7 +9,6 @@ namespace UpcomingMovies.Model
         public int Position { get; set; }
         public string Name { get; set; }
         public string Poster { get; set; }
-        public string Genres { get; set; }
         public string OverView { get; set; }
         public string ReleaseDate { get; set; }
         public bool Error { get; set; }
@@ -24,5 +23,8 @@ namespace UpcomingMovies.Model
         public string HomePage { get; set; }
         [Ignore]
         public List<ImageModel> Images { get; set; }
+
+        [Ignore]
+        public List<GenreModel> Genres { get; set; }
     }
 }

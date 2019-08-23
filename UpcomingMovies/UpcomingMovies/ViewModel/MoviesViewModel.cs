@@ -14,24 +14,9 @@ namespace UpcomingMovies.ViewModel
 {
     public class MoviesViewModel : ViewModelBase
     {
-        readonly INavigation _navigation;
         readonly MovieService _movieService;
         readonly MovieParameter _movieParameter;
-
-        bool _IsReady;
-        public bool IsReady
-        {
-            get { return _IsReady; }
-            set
-            {
-                if (_IsReady != value)
-                {
-                    _IsReady = value;
-                    OnPropertyChanged("IsReady");
-                }
-            }
-        }
-
+        
         bool _IsVisibleMovies;
         public bool IsVisibleMovies
         {
@@ -93,10 +78,9 @@ namespace UpcomingMovies.ViewModel
         }
         public MoviesViewModel(INavigation navigation)
         {
-            _navigation = navigation;
+            _Navigation = navigation;
             _movieService = new MovieService();
             _movieParameter = new MovieParameter();
-
             Movies = new ObservableCollection<MovieModel>();
 
             GetMovieCommand = new Command<MovieModel>(GetMovie);
@@ -120,83 +104,46 @@ namespace UpcomingMovies.ViewModel
             }
 
             this.IsVisibleMovies = false;
-            Global.Instance.DataBase.GetMovieDataCacheTimeSpanAsync().ContinueWith((movieCachedDataResult) =>
-            {
-                if (movieCachedDataResult.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
-                {
-                    var actualDate = DateTime.Now;
-                    var movieCacheDateTimeSpan = movieCachedDataResult.Result;
-
-                    var isBetweenTimeSpan = movieCacheDateTimeSpan != null && actualDate > movieCacheDateTimeSpan.DateFrom && actualDate < movieCacheDateTimeSpan.DateTo;
-
-                    if (isBetweenTimeSpan)
-                    {
-                        Global.Instance.DataBase.GetMoviesAsync().ContinueWith((moviesCachedResult) =>
-                        {
-                            if (moviesCachedResult.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
-                            {
-                                var moviesCached = moviesCachedResult.Result;
-                                Movies.Clear();
-                                PopulateMoviesListView(moviesCached);
-                                _movieParameter.Page = 1;
-                                _movieParameter.Resource = MoviesApiResourcesConsts.UPCOMING_MOVIES;
-                            }
-                        });
-                    }
-                    else
-                    {
-                        GetUpComingMovies();
-                    }
-                    this.IsVisibleMovies = true;
-                }
-            });
-        }
-
-        void GetUpComingMovies()
-        {
             _movieParameter.Resource = MoviesApiResourcesConsts.UPCOMING_MOVIES;
             _movieParameter.Page = 1;
             Device.BeginInvokeOnMainThread(() =>
             {
                 _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
-                            {
-                                if (moviesList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
-                                {
-                                    var movies = moviesList.Result;
-                                    if (!movies.Any())
-                                    {
-#if __ANDROID__
-                                Global.Instance.Toast.ShortToast("No movies found...");
-#endif
-                                    }
-                                    else
-                                    {
-                                        Movies.Clear();
-                                        PopulateMoviesListView(movies);
-                                        SetMovieCacheTimeSpanData();
-                                    }
-                                }
-                            });
+                {
+                    if (moviesList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                    {
+                        var movies = moviesList.Result;
+                        if (!movies.Any())
+                        {
+                            Global.Instance.Toast.ShortToast("No movies found...");
+                        }
+                        else
+                        {
+                            Movies.Clear();
+                            PopulateMoviesListView(movies);
+                            this.IsVisibleMovies = true;
+                        }
+                    }
+                });
             });
         }
 
         void GetMovie(MovieModel movie)
         {
             _Navigated = true;
-            _navigation.PushModalAsync(new MoviePage { MovieID = movie.Id }, true);
+            _Navigation.PushModalAsync(new MoviePage { MovieID = movie.Id }, true);
         }
 
         void SearchMovie()
         {
-            _navigation.PushAsync(new SearchMoviesResultPage { SearchText = this.SearchText }, true);
+            _Navigated = true;
+            _Navigation.PushModalAsync(new SearchMoviesResultPage { SearchText = this.SearchText }, true);
             this.SearchText = string.Empty;
         }
 
         void PullToRefresh()
         {
-#if __ANDROID__
             Global.Instance.Toast.ShortToast("Refreshing...");
-#endif
 
             this.IsRefreshing = true;
             this.IsVisibleMovies = false;
@@ -211,15 +158,12 @@ namespace UpcomingMovies.ViewModel
                             var movies = moviesList.Result;
                             if (!movies.Any())
                             {
-#if __ANDROID__
                                 Global.Instance.Toast.ShortToast("No movies found...");
-#endif
                             }
                             else
                             {
                                 Movies.Clear();
                                 PopulateMoviesListView(movies);
-                                UpdateMovieCacheTimeSpanData();
                             }
                             IsRefreshing = false;
                             IsVisibleMovies = true;
@@ -248,12 +192,12 @@ namespace UpcomingMovies.ViewModel
                             var movies = moviesList.Result;
                             if (!movies.Any())
                             {
-#if __ANDROID__
                                 Global.Instance.Toast.ShortToast("No more movies...");
-#endif
-                                return;
                             }
-                            PopulateMoviesListView(movies);
+                            else
+                            {
+                                PopulateMoviesListView(movies);
+                            }
                         }
                     });
             });
@@ -267,33 +211,6 @@ namespace UpcomingMovies.ViewModel
                 position = position + 1;
                 movie.Position = position;
                 Movies.Add(movie);
-            });
-        }
-
-        void SetMovieCacheTimeSpanData()
-        {
-            var movieCacheTimeSpan = DateTime.Now;
-            Global.Instance.DataBase.InsertMovieDataCacheTimeSpanAsync(movieCacheTimeSpan, movieCacheTimeSpan.AddDays(1)).ContinueWith((result) =>
-            {
-                if (result.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
-                {
-                    Global.Instance.DataBase.InsertMoviesAsync(Movies.ToList()).Wait();
-                }
-            });
-        }
-
-        void UpdateMovieCacheTimeSpanData()
-        {
-            Global.Instance.DataBase.DeleteMoviesAsync().ContinueWith((resultDelete) =>
-            {
-                if (resultDelete.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
-                {
-                    var movieCacheTimeSpan = DateTime.Now;
-                    Global.Instance.DataBase.UpdateMovieDataCacheTimeSpanAsync(movieCacheTimeSpan, movieCacheTimeSpan.AddDays(1)).ContinueWith((resultUpdate) =>
-                    {
-                        Global.Instance.DataBase.InsertMoviesAsync(Movies.ToList()).Wait();
-                    });
-                }
             });
         }
     }

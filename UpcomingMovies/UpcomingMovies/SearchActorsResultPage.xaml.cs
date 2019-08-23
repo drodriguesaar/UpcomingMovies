@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UpcomingMovies.Infra;
+﻿using UpcomingMovies.Infra;
 using UpcomingMovies.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -29,7 +24,7 @@ namespace UpcomingMovies
         }
         void SetPageData()
         {
-            BindingContext = new SearchActorsResultViewModel(Navigation);
+            BindingContext = new SearchActorsResultViewModel(this.Navigation);
         }
         protected override void OnAppearing()
         {
@@ -37,7 +32,7 @@ namespace UpcomingMovies
             {
                 ((SearchActorsResultViewModel)BindingContext).SearchByText(this.SearchText);
             }
-            catch (Exception)
+            catch
             {
                 Global.Instance.Toast.ShortToast("Heck, this was unexpected...");
             }

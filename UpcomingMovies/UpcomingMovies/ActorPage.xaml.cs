@@ -23,7 +23,7 @@ namespace UpcomingMovies
         }
         void SetPageData()
         {
-            BindingContext = new ActorDetailViewModel();
+            BindingContext = new ActorDetailViewModel(this.Navigation);
         }
         protected override void OnAppearing()
         {

@@ -4,7 +4,6 @@
              xmlns:local="clr-namespace:UpcomingMovies.ViewModel"
              x:Class="UpcomingMovies.ActorPage"
              xmlns:converter="clr-namespace:UpcomingMovies.Converter">
-    
     <ContentPage.BindingContext>
         <local:ActorDetailViewModel/>
     </ContentPage.BindingContext>
@@ -12,100 +11,45 @@
         <converter:BooleanConverter x:Key="BoolConverter" />
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-        <ActivityIndicator IsRunning="{Binding IsVisible, Converter={StaticResource BoolConverter}}" IsVisible="{Binding IsVisible, Converter={StaticResource BoolConverter}}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></ActivityIndicator>
-        <ScrollView 
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="FillAndExpand"
-            VerticalScrollBarVisibility="Never"
-            BindingContext="{Binding Actor}"
-            >
-
-                <Grid RowSpacing="1" ColumnSpacing="1" IsVisible="{Binding IsVisible }">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="150"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Image 
-                    Grid.Column="0"
-                    Grid.Row="0"
-                    Source="{ Binding Photo }"
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="FillAndExpand"
-                    Aspect="AspectFit"
-                    Margin="0,5,0,0" BackgroundColor="Silver" IsVisible="{Binding IsVisible }"/>
-                <StackLayout
-                    Padding="5,0,0,0"
-                    Spacing="1"
-                    Grid.Column="1"
-                    Grid.Row="0"
-                    Grid.ColumnSpan="2">
-                    <Label 
-                        Text="{ Binding Name }"
-                        HorizontalOptions="FillAndExpand" 
-                        VerticalOptions="FillAndExpand" 
-                        HorizontalTextAlignment="Start" 
-                        VerticalTextAlignment="Center" 
-                        FontSize="Medium"
-                        FontAttributes="Bold" />
-                    <Label 
-                        Text="{ Binding DOB }"
-                        HorizontalOptions="FillAndExpand" 
-                        VerticalOptions="FillAndExpand" 
-                        HorizontalTextAlignment="Start" 
-                        VerticalTextAlignment="Center" 
-                        FontSize="Small"
-                        FontAttributes="None" />
-                    <Label 
-                        Text="{ Binding POB }"
-                        HorizontalOptions="FillAndExpand" 
-                        VerticalOptions="FillAndExpand" 
-                        HorizontalTextAlignment="Start" 
-                        VerticalTextAlignment="Center" 
-                        FontSize="Small"
-                        FontAttributes="None" />
-                    <Label 
-                        Text="{ Binding Department }"
-                        HorizontalOptions="FillAndExpand" 
-                        VerticalOptions="FillAndExpand" 
-                        HorizontalTextAlignment="Start" 
-                        VerticalTextAlignment="Center" 
-                        FontSize="Small"
-                        FontAttributes="None" />
-
-                    <Label 
-                        Text="{ Binding Gender }"
-                        HorizontalOptions="FillAndExpand" 
-                        VerticalOptions="FillAndExpand" 
-                        HorizontalTextAlignment="Start" 
-                        VerticalTextAlignment="Center" 
-                        FontSize="Small"
-                        FontAttributes="None" />
-
-                    <Label 
-                        Text="{ Binding Adult }"
-                        HorizontalOptions="FillAndExpand" 
-                        VerticalOptions="FillAndExpand" 
-                        HorizontalTextAlignment="Start" 
-                        VerticalTextAlignment="Center" 
-                        FontSize="Small"
-                        FontAttributes="None" />
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="35" />
+                
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ScrollView Grid.Row="0" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" VerticalScrollBarVisibility="Never" HorizontalScrollBarVisibility="Never">
+                <StackLayout BindingContext="{ Binding Actor }" Spacing="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Image HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="255" WidthRequest="170" Aspect="AspectFit">
+                        <Image.Source>
+                            <UriImageSource Uri="{ Binding Photo }" CacheValidity="4" CachingEnabled="True"/>
+                        </Image.Source>
+                    </Image>
+                    <Label Text="{ Binding Name }" HorizontalOptions="FillAndExpand" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Large" FontAttributes="Bold"/>
+                    <Label Text="{ Binding DOB }" HorizontalOptions="FillAndExpand" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                    <Label Text="{ Binding DOD }" HorizontalOptions="FillAndExpand" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                    <Label Text="{ Binding POB }" HorizontalOptions="FillAndExpand" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                    <Label Text="{ Binding Popularity }" HorizontalOptions="FillAndExpand" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                    <Label Text="Biography" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" FontAttributes="Bold"/>
+                    <Label Text="{ Binding Bio }" HorizontalOptions="FillAndExpand" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
                 </StackLayout>
-                <Label
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                    HorizontalOptions="FillAndExpand"
-                    Text="{Binding Bio }">
-                </Label>
-            </Grid>
-
-        </ScrollView>
-        </StackLayout>
+            </ScrollView>
+            <Button 
+                Grid.Row="1" 
+                Grid.Column="0" 
+                Text="Close" 
+                HorizontalOptions="Center" 
+                VerticalOptions="Center" 
+                TextColor="White"
+                BackgroundColor="#8d3be3" 
+                BorderColor="Transparent" 
+                BorderWidth="1"
+                FontSize="Small" 
+                CornerRadius="20"
+                WidthRequest="200"
+                Command="{ Binding CloseModalCommand }" />
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
