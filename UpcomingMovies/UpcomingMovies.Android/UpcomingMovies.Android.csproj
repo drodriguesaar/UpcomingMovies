@@ -59,7 +59,7 @@
     <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.0.0.497661</Version>
+      <Version>4.2.0.709249</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -448,6 +448,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_historymovie.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UpcomingMovies\UpcomingMovies.csproj">
+      <Project>{EBE80EBB-0FA6-4B97-BB8B-552AC29BBDAB}</Project>
+      <Name>UpcomingMovies</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

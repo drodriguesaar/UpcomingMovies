@@ -6,10 +6,10 @@ namespace UpcomingMovies.DTO
 {
     public class PersonDTO
     {
-        public int id { get; set; }
         public string birthday { get; set; }
         public string known_for_department { get; set; }
         public string deathday { get; set; }
+        public int id { get; set; }
         public string name { get; set; }
         public List<string> also_known_as { get; set; }
         public int gender { get; set; }
@@ -20,5 +20,7 @@ namespace UpcomingMovies.DTO
         public bool adult { get; set; }
         public string imdb_id { get; set; }
         public string homepage { get; set; }
+
+
     }
 }

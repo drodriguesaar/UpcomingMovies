@@ -14,46 +14,56 @@
         <converter:BooleanConverter x:Key="BoolConverter" />
     </ContentPage.Resources>
     <ContentPage.Content>
-        <ScrollView HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" Orientation="Vertical" >
-            <StackLayout>
-                <!--SEARCH BAR ELEMENT-->
-                <SearchBar Placeholder="Search..." IsEnabled="{Binding IsVisileActors }" HorizontalOptions="FillAndExpand" VerticalOptions="Start" FontSize="Small" FlowDirection="MatchParent" Text="{ Binding SearchText }" SearchCommand="{ Binding SearchActorCommand }"/>
-                <!--ACTORS VERTICAL LIST ELEMENT-->
-                <ActivityIndicator IsRunning="{Binding IsVisileActors, Converter={StaticResource BoolConverter}}" IsVisible="{Binding IsVisileActors, Converter={StaticResource BoolConverter}}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></ActivityIndicator>
-                <ListView HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" IsVisible="{ Binding IsVisileActors }" ItemsSource="{ Binding Actors }" HasUnevenRows="True" IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshing}" RefreshCommand="{Binding PullToRefreshCommand}">
-                    <ListView.Behaviors>
-                        <behavior:EventToCommandBehavior EventName="ItemTapped" Command="{ Binding GetActorCommand }" Converter="{ StaticResource ItemTappedConverter }"/>
-                        <behavior:EventToCommandBehavior EventName="ItemAppearing" Command="{ Binding ActorAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>
-                    </ListView.Behaviors>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <ViewCell.View>
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="100" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="75" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Row="0" Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Aspect="Fill">
-                                            <Image.Source>
-                                                <UriImageSource Uri="{ Binding Photo }" CacheValidity="3" CachingEnabled="True" />
-                                            </Image.Source>
-                                        </Image>
-                                        <StackLayout Grid.Row="0" Grid.Column="1">
-                                            <Label  Text="{ Binding Name }" FontSize="Medium" FontAttributes="Bold" VerticalOptions="Start" HorizontalOptions="Start" VerticalTextAlignment="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"/>
-                                            <Label  Text="{ Binding DOB }" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="Start" VerticalTextAlignment="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"/>
-                                            <Label  Text="{ Binding Department }" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="Start" VerticalTextAlignment="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"/>
-                                        </StackLayout>
-                                    </Grid>
-                                </ViewCell.View>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackLayout>
-        </ScrollView>
+        <StackLayout>
+            <!--SEARCH BAR ELEMENT-->
+            <SearchBar Placeholder="Search..." IsEnabled="{Binding IsVisileActors }" HorizontalOptions="FillAndExpand" VerticalOptions="Start" FontSize="Small" FlowDirection="MatchParent" Text="{ Binding SearchText }" SearchCommand="{ Binding SearchActorCommand }"/>
+            <!--ACTORS VERTICAL LIST ELEMENT-->
+            <ActivityIndicator IsRunning="{Binding IsVisileActors, Converter={StaticResource BoolConverter}}" IsVisible="{Binding IsVisileActors, Converter={StaticResource BoolConverter}}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></ActivityIndicator>
+            <ListView 
+                
+                CachingStrategy="RecycleElementAndDataTemplate"
+                HorizontalOptions="FillAndExpand" 
+                VerticalOptions="StartAndExpand" 
+                IsVisible="{ Binding IsVisileActors }" 
+                ItemsSource="{ Binding Actors }" 
+                HasUnevenRows="True" 
+                IsPullToRefreshEnabled="True" 
+                IsRefreshing="{Binding IsRefreshing}" 
+                RefreshCommand="{Binding PullToRefreshCommand}">
+                
+                <ListView.Behaviors>
+                    <behavior:EventToCommandBehavior EventName="ItemTapped" Command="{ Binding GetActorCommand }" Converter="{ StaticResource ItemTappedConverter }"/>
+                    <behavior:EventToCommandBehavior EventName="ItemAppearing" Command="{ Binding ActorAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>
+                </ListView.Behaviors>
+                
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="100" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="75" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Row="0" Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Aspect="Fill">
+                                        <Image.Source>
+                                            <UriImageSource Uri="{ Binding Photo }" CacheValidity="3" CachingEnabled="True" />
+                                        </Image.Source>
+                                    </Image>
+                                    <StackLayout Grid.Row="0" Grid.Column="1" Padding="0,5,0,0">
+                                        <Label  Text="{ Binding Name }" FontSize="Medium" FontAttributes="Bold" VerticalOptions="Start" HorizontalOptions="Start" VerticalTextAlignment="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"/>
+                                        <Label  Text="{ Binding Popularity }" FontSize="Small" VerticalOptions="Start" HorizontalOptions="Start" VerticalTextAlignment="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"/>
+                                    </StackLayout>
+                                </Grid>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                
+            </ListView>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

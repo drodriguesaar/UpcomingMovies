@@ -9,139 +9,69 @@
     </ContentPage.BindingContext>
     <ContentPage.Resources>
         <converter:ScoreColorConverter x:Key="ScoreColorConverter"/>
+        <converter:GenreImageConverter x:Key="GenreImageConverter"/>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <ScrollView 
-            IsVisible="{Binding IsReady}"
-            BindingContext="{Binding Movie}"
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="FillAndExpand"
-            VerticalScrollBarVisibility="Never">
-            <StackLayout
-                Spacing="1"
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="FillAndExpand">
-                <Image 
-                    Source="{ Binding Poster }"
-                    HorizontalOptions="Center" 
-                    VerticalOptions="Center"
-                    HeightRequest="255"
-                    WidthRequest="170"
-                    Aspect="AspectFit"
-                    Margin="0,5,0,0" BackgroundColor="{Binding Color}"/>
-                <Label 
-                    Text="{ Binding Name }"
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="FillAndExpand" 
-                    HorizontalTextAlignment="Center" 
-                    VerticalTextAlignment="Center" 
-                    FontSize="Large"
-                    FontAttributes="Bold" BackgroundColor="{Binding Color}" />
-                <Label 
-                    Text="{ Binding ReleaseDate, StringFormat='Release Date: {0}' }"
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="FillAndExpand" 
-                    HorizontalTextAlignment="Center" 
-                    VerticalTextAlignment="Center" 
-                    FontSize="Small" />
-                <Label 
-                    Text="{ Binding Genres, StringFormat='Genres: {0}' }"
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="FillAndExpand" 
-                    HorizontalTextAlignment="Center" 
-                    VerticalTextAlignment="Center" 
-                    FontSize="Small"  BackgroundColor="{Binding Color}" />
-                <Label 
-                    Text="{ Binding Language, StringFormat='Language: {0}' }"
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="FillAndExpand" 
-                    HorizontalTextAlignment="Center" 
-                    VerticalTextAlignment="Center" 
-                    FontSize="Small"  BackgroundColor="{Binding Color}" />
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Label 
-                        Text="{ Binding Score }"
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        HorizontalOptions="CenterAndExpand" 
-                        VerticalOptions="CenterAndExpand" 
-                        HorizontalTextAlignment="Center" 
-                        VerticalTextAlignment="Center" 
-                        FontSize="Large"
-                        FontAttributes="Bold"  BackgroundColor="{Binding Color}" TextColor="{Binding Score, Converter={StaticResource ScoreColorConverter}}" />
-                    <Label 
-                        Text="{ Binding Votes }"
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        HorizontalOptions="CenterAndExpand" 
-                        VerticalOptions="CenterAndExpand" 
-                        HorizontalTextAlignment="Center" 
-                        VerticalTextAlignment="Center" 
-                        FontSize="Large"
-                        FontAttributes="Bold"  BackgroundColor="{Binding Color}" />
-                    <Label 
-                        Text="Score"
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        HorizontalOptions="CenterAndExpand" 
-                        VerticalOptions="CenterAndExpand" 
-                        HorizontalTextAlignment="Center" 
-                        VerticalTextAlignment="Center" 
-                        FontSize="Small"  BackgroundColor="{Binding Color}" />
-                    <Label 
-                        Text="Votes"
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        HorizontalOptions="CenterAndExpand" 
-                        VerticalOptions="CenterAndExpand" 
-                        HorizontalTextAlignment="Center" 
-                        VerticalTextAlignment="Center" 
-                        FontSize="Small"  BackgroundColor="{Binding Color}" />
-                </Grid>
-                <Label 
-                    Text="Overview"
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="FillAndExpand" 
-                    HorizontalTextAlignment="Center" 
-                    VerticalTextAlignment="Center" 
-                    FontSize="Medium" 
-                    FontAttributes="Bold"  BackgroundColor="{Binding Color}" />
-                <Label 
-                    Text="{ Binding OverView }"
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="FillAndExpand" 
-                    HorizontalTextAlignment="Center" 
-                    VerticalTextAlignment="Center" 
-                    FontSize="Medium"  BackgroundColor="{Binding Color}"/>
-                <ScrollView
-                    Orientation="Horizontal">
-                    <StackLayout
-                        Orientation="Horizontal"
-                        BindableLayout.ItemsSource="{Binding Images}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ScrollView Grid.Row="0" Grid.Column="0" BindingContext="{Binding Movie}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" VerticalScrollBarVisibility="Never">
+                <StackLayout Spacing="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Image HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="255" WidthRequest="170" Aspect="AspectFit" Margin="0,5,0,0">
+                        <Image.Source>
+                            <UriImageSource Uri="{Binding Poster}" CacheValidity="4" CachingEnabled="True" />
+                        </Image.Source>
+                    </Image>
+                    <Label Text="{ Binding Name }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Large" FontAttributes="Bold" />
+                    <Label Text="{ Binding ReleaseDate, StringFormat='Release Date: {0}' }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Small" />
+                    <StackLayout Orientation="Horizontal" BindableLayout.ItemsSource="{Binding Genres }" HeightRequest="85" VerticalOptions="Center" HorizontalOptions="Center">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
-                                <Image 
-                                    Grid.Row="0" 
-                                    Grid.Column="0" 
-                                    Source="{ Binding Path }" 
-                                    HeightRequest="{Binding Height}"
-                                    WidthRequest="{Binding Width}"
-                                    HorizontalOptions="CenterAndExpand" 
-                                    VerticalOptions="CenterAndExpand"    
-                                    Aspect="Fill" />
+                                
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="50" />
+                                                <RowDefinition Height="30"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" >
+                                                <Image.Source>
+                                                    <FileImageSource File="{Binding Name, Converter={ StaticResource GenreImageConverter } }"/>
+                                                </Image.Source>
+                                            </Image>
+                                            <Label Grid.Row="1" Grid.Column="0" Text="{Binding Name}" HorizontalOptions="Center" />
+                                        </Grid>
+                                   
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </StackLayout>
-                </ScrollView>
-            </StackLayout>
-        </ScrollView>
+                    <Label Text="{ Binding Language, StringFormat='Language: {0}' }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Small" />
+                    <Grid HeightRequest="130">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="110" />
+                            <RowDefinition Height="20" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Text="{ Binding Score }" Grid.Row="0" Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Header" FontAttributes="Bold" TextColor="{Binding Score, Converter={StaticResource ScoreColorConverter}}" />
+                        <Label Text="{ Binding Votes }" Grid.Row="0" Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Header" FontAttributes="Bold" />
+                        <Label Text="Score" Grid.Row="1" Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Small" />
+                        <Label Text="Votes" Grid.Row="1" Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Small" />
+                    </Grid>
+                    <Label Text="Overview" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" FontAttributes="Bold" />
+                    <Label Text="{ Binding OverView }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                </StackLayout>
+            </ScrollView>
+            <Button Grid.Row="1" Grid.Column="0" Text="Close" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" BackgroundColor="#8d3be3" BorderColor="Transparent" BorderWidth="1" FontSize="Small" CornerRadius="20" WidthRequest="200" Command="{ Binding CloseModalCommand }" />
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

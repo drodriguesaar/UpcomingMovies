@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.Windows.Input;
 using UpcomingMovies.Consts;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
@@ -12,31 +9,22 @@ namespace UpcomingMovies.ViewModel
 {
     public class ActorDetailViewModel : ViewModelBase
     {
-        ActorModel _Actor;
-        bool _IsVisible;
-        PeopleService _peopleService;
-        MovieParameter _movieParameter;
-
+        readonly PeopleService _peopleService;
+        readonly MovieParameter _movieParameter;
 
         public ActorDetailViewModel()
         {
+        }
+
+        public ActorDetailViewModel(INavigation navigation)
+        {
+            _Navigation = navigation;
             _peopleService = new PeopleService();
             _movieParameter = new MovieParameter();
+            CloseModalCommand = new Command(CloseModal);
         }
-
-        public bool IsVisible
-        {
-            get { return _IsVisible; }
-            set
-            {
-                if (_IsVisible != value)
-                {
-                    _IsVisible = value;
-                    OnPropertyChanged("IsVisible");
-                }
-            }
-        }
-
+        
+        ActorModel _Actor;
         public ActorModel Actor
         {
             get { return _Actor; }
@@ -49,9 +37,16 @@ namespace UpcomingMovies.ViewModel
                 }
             }
         }
+
+        public ICommand CloseModalCommand { get; set; }
+
+        void CloseModal()
+        { 
+            this._Navigation.PopModalAsync(true);
+        }
+
         public void GetActorDetail(int id)
         {
-            IsVisible = false;
             _movieParameter.Id = id;
             _movieParameter.Resource = MoviesApiResourcesConsts.SEARCH_PERSON;
             Device.BeginInvokeOnMainThread(() =>
@@ -61,7 +56,6 @@ namespace UpcomingMovies.ViewModel
                         if (actor.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
                         {
                             Actor = actor.Result;
-                            IsVisible = true;
                         }
                     });
             });

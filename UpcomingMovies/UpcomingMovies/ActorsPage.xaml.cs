@@ -22,12 +22,19 @@ namespace UpcomingMovies
         }
         void SetPageData()
         {
-            BindingContext = new ActorsViewModel(Navigation);
+            BindingContext = new ActorsViewModel(this.Navigation);
         }
 
         protected override void OnAppearing()
         {
-            ((ActorsViewModel)BindingContext).Init();
+            try
+            {
+                ((ActorsViewModel)BindingContext).Init();
+            }
+            catch
+            {
+                Global.Instance.Toast.ShortToast("Heck, this was unexpected...");
+            }
             base.OnAppearing();
         }
     }

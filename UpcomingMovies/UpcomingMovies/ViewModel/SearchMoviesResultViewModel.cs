@@ -19,13 +19,7 @@ namespace UpcomingMovies.ViewModel
     {
         readonly MovieService _movieService;
         readonly MovieParameter _movieParameter;
-        readonly INavigation _navigation;
-
-        bool _IsVisible;
-        string _SearchText;
-        bool _IsRefreshing;
-        ObservableCollection<MovieModel> _Movies;
-
+        
         public SearchMoviesResultViewModel()
         {
 
@@ -33,7 +27,7 @@ namespace UpcomingMovies.ViewModel
 
         public SearchMoviesResultViewModel(INavigation navigation)
         {
-            _navigation = navigation;
+            _Navigation = navigation;
             _movieParameter = new MovieParameter();
             _movieService = new MovieService();
             Movies = new ObservableCollection<MovieModel>();
@@ -41,9 +35,8 @@ namespace UpcomingMovies.ViewModel
             MovieAppearCommand = new Command<MovieModel>(MovieAppear);
         }
 
-        public ICommand GetMovieCommand { get; private set; }
-        public ICommand MovieAppearCommand { get; private set; }
 
+        bool _IsVisible;
         public bool IsVisible
         {
             get { return _IsVisible; }
@@ -56,6 +49,8 @@ namespace UpcomingMovies.ViewModel
                 }
             }
         }
+
+        string _SearchText;
         public string SearchText
         {
             get { return _SearchText; }
@@ -68,6 +63,8 @@ namespace UpcomingMovies.ViewModel
                 }
             }
         }
+
+        bool _IsRefreshing;
         public bool IsRefreshing
         {
             get { return _IsRefreshing; }
@@ -80,7 +77,8 @@ namespace UpcomingMovies.ViewModel
                 }
             }
         }
-        public bool NavigatedToDetails { get; set; }
+        
+        ObservableCollection<MovieModel> _Movies;
         public ObservableCollection<MovieModel> Movies
         {
             get { return _Movies; }
@@ -94,6 +92,9 @@ namespace UpcomingMovies.ViewModel
             }
         }
 
+        public ICommand GetMovieCommand { get; private set; }
+
+        public ICommand MovieAppearCommand { get; private set; }
 
         public void SearchByText(string searchText)
         {
@@ -127,6 +128,7 @@ namespace UpcomingMovies.ViewModel
             });
 
         }
+
         void PopulateListView(List<MovieModel> movies)
         {
             var position = Movies.Count();
@@ -137,10 +139,11 @@ namespace UpcomingMovies.ViewModel
                 Movies.Add(movie);
             });
         }
+
         void GetMovie(MovieModel movie)
         {
-            NavigatedToDetails = true;
-            _navigation.PushModalAsync(new MoviePage { MovieID = movie.Id });
+            _Navigated = true;
+            _Navigation.PushModalAsync(new MoviePage { MovieID = movie.Id });
         }
 
         void MovieAppear(MovieModel movie)

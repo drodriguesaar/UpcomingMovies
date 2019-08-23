@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Windows.Input;
 using UpcomingMovies.Component;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
@@ -9,25 +9,23 @@ namespace UpcomingMovies.ViewModel
 {
     public class MovieDetailViewModel : ViewModelBase
     {
-        MovieService _movieComponent;
-        MovieParameter _movieParameter;
-        MovieModel _Movie;
-        Color _Color;
-        public Color Color
+        readonly MovieService _movieService;
+        readonly MovieParameter _movieParameter;
+        
+        public MovieDetailViewModel()
         {
-            get { return _Color; }
-            set
-            {
-                if (_Color != value)
-                {
-                    _Color = value;
-                    OnPropertyChanged("Color");
-                }
-            }
+
         }
 
-        bool _IsReady;
+        public MovieDetailViewModel(INavigation navigation)
+        {
+            _Navigation = navigation;
+            _movieParameter = new MovieParameter();
+            _movieService = new MovieService();
+            CloseModalCommand = new Command(CloseModal);
+        }
 
+        MovieModel _Movie;
         public MovieModel Movie
         {
             get { return _Movie; }
@@ -40,40 +38,25 @@ namespace UpcomingMovies.ViewModel
                 }
             }
         }
-        public bool IsReady
-        {
-            get { return _IsReady; }
-            set
-            {
-                if (_IsReady != value)
-                {
-                    _IsReady = value;
-                    OnPropertyChanged("IsReady");
-                }
-            }
-        }
 
-        public MovieDetailViewModel()
+        public ICommand CloseModalCommand { get; set; }
+
+        void CloseModal()
         {
-            _movieParameter = new MovieParameter();
-            _movieComponent = new MovieService();
-            
+            this._Navigation.PopModalAsync(true);
         }
 
         public void GetMovieDetails(int id)
         {
-            IsReady = false;
-            Color = Color.Silver;
+            
             _movieParameter.Id = id;
             Device.BeginInvokeOnMainThread(() =>
             {
-                _movieComponent.GetMovie(_movieParameter).ContinueWith((movie) =>
+                _movieService.GetMovie(_movieParameter).ContinueWith((movie) =>
                     {
                         if (movie.Status == TaskStatus.RanToCompletion)
                         {
                             Movie = movie.Result;
-                            IsReady = true;
-                            Color = Color.Transparent;
                         }
                     });
             });

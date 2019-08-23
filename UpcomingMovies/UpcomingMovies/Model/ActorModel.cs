@@ -17,13 +17,15 @@ namespace UpcomingMovies.Model
         public string Department { get; set; }
         public string POB { get; set; }
         public string DOB { get; set; }
+        public string DOD { get; set; }
         public string Bio { get; set; }
-        public bool Adult { get; set; }
+        public string Adult { get; set; }
         public string Gender { get; set; }
         public bool Error { get; set; }
         public int Position { get; set; }
         public string ErrorMessage { get; set; }
         public string HomePage { get; set; }
+        public string Popularity { get; set; }
         public List<KnownForModel> KnownFor { get; set; }
     }
 }

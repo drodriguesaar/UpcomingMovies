@@ -169,7 +169,6 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
-
   <ItemGroup>
     <ProjectReference Include="..\UpcomingMovies\UpcomingMovies.csproj">
       <Project>{59C6021C-3F06-4746-9306-BB80DB191BB3}</Project>
@@ -178,8 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.0.0.497661</Version>
+      <Version>4.2.0.709249</Version>
     </PackageReference>
   </ItemGroup>
-
 </Project>

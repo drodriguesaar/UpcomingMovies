@@ -50,12 +50,12 @@ namespace UpcomingMovies.Component
                 DateTime.TryParse(response.release_date, out releaseDate);
                 var releaseDateFormatted = releaseDate == DateTime.MinValue ? string.Empty : releaseDate.ToShortDateString();
 
-                var genres = response.genres == null ? "Not available" : string.Join(", ", response.genres.Select(g => g.name));
-
                 movieModel.ReleaseDate = releaseDateFormatted;
                 movieModel.Name = response.title;
                 movieModel.OverView = response.overview;
-                movieModel.Genres = genres;
+
+                movieModel.Genres = response.genres.Select(g => new GenreModel { ID = g.id, Name = g.name }).ToList();
+
                 movieModel.Poster = response.poster_path.BuildImageURI(size: "500");
                 movieModel.Id = response.id;
                 movieModel.Score = response.vote_average;
