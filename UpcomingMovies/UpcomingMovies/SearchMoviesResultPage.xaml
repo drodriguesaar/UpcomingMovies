@@ -12,25 +12,13 @@
         <converter:ItemTappedEventArgsToItemTappedConverter x:Key="ItemTappedConverter"/>
         <converter:ItemAppearEventArgsToItemAppearConverter x:Key="ItemAppearConverter"/>
         <converter:BooleanConverter x:Key="BoolConverter" />
+        <converter:ScoreColorConverter x:Key="ScoreColorConverter"/>
     </ContentPage.Resources>
     <ContentPage.Content>
       <StackLayout>
-            <ActivityIndicator IsRunning="{Binding IsVisible, Converter={StaticResource BoolConverter}}" 
-                               IsVisible="{Binding IsVisible, Converter={StaticResource BoolConverter}}" 
-                               HorizontalOptions="CenterAndExpand" 
-                               VerticalOptions="CenterAndExpand">
-            </ActivityIndicator>
-            <Label Text="{Binding SearchText }" FontSize="Medium" FontAttributes="Bold"></Label>
-            <ListView  
-                    HorizontalOptions="FillAndExpand" 
-                    VerticalOptions="StartAndExpand"
-                    IsVisible="{ Binding IsVisible }"
-                    ItemsSource="{ Binding Movies }"
-                    HasUnevenRows="True"
-                    IsPullToRefreshEnabled="True"
-                    IsRefreshing="{Binding IsRefreshing}"
-                    RefreshCommand="{Binding PullToRefreshCommand}">
-                <ListView.Behaviors>
+            <ActivityIndicator IsRunning="{Binding IsVisible, Converter={StaticResource BoolConverter}}" IsVisible="{Binding IsVisible, Converter={StaticResource BoolConverter}}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></ActivityIndicator>
+            <Label Text="{Binding SearchText }" FontSize="Subtitle" FontAttributes="Bold"></Label>
+            <ListView  HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" IsVisible="{ Binding IsVisible }" ItemsSource="{ Binding Movies }" HasUnevenRows="True" IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshing}" RefreshCommand="{Binding PullToRefreshCommand}" CachingStrategy="RecycleElementAndDataTemplate">                <ListView.Behaviors>
                     <behavior:EventToCommandBehavior EventName="ItemTapped" Command="{ Binding GetMovieCommand }" Converter="{ StaticResource ItemTappedConverter }"/>
                     <behavior:EventToCommandBehavior EventName="ItemAppearing" Command="{ Binding MovieAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>
                 </ListView.Behaviors>
@@ -81,6 +69,7 @@
                                         Grid.Row="0">
                                         <Label 
                                             Text="{ Binding Score }" 
+                                            TextColor="{Binding Score, Converter={StaticResource ScoreColorConverter} }"
                                             FontSize="Large"  
                                             FontAttributes="Bold"
                                             VerticalOptions="Center" 

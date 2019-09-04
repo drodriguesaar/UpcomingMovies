@@ -10,26 +10,26 @@
     <ContentPage.Resources>
         <converter:ScoreColorConverter x:Key="ScoreColorConverter"/>
         <converter:GenreImageConverter x:Key="GenreImageConverter"/>
+        <converter:LanguageConverter x:Key="LanguageConverter"/>
     </ContentPage.Resources>
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="35"/>
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ScrollView Grid.Row="0" Grid.Column="0" BindingContext="{Binding Movie}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" VerticalScrollBarVisibility="Never">
+            <ScrollView Grid.Row="0" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" VerticalScrollBarVisibility="Never">
                 <StackLayout Spacing="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Image HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="255" WidthRequest="170" Aspect="AspectFit" Margin="0,5,0,0">
                         <Image.Source>
-                            <UriImageSource Uri="{Binding Poster}" CacheValidity="4" CachingEnabled="True" />
+                            <UriImageSource Uri="{Binding Movie.Poster}" CacheValidity="4" CachingEnabled="True" />
                         </Image.Source>
                     </Image>
-                    <Label Text="{ Binding Name }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Large" FontAttributes="Bold" />
-                    <Label Text="{ Binding ReleaseDate, StringFormat='Release Date: {0}' }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Small" />
-                    <StackLayout Orientation="Horizontal" BindableLayout.ItemsSource="{Binding Genres }" HeightRequest="85" VerticalOptions="Center" HorizontalOptions="Center">
+                    <Label Text="{ Binding Movie.Name }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="45" FontAttributes="Bold" />
+                    <StackLayout Orientation="Horizontal" BindableLayout.ItemsSource="{Binding  Movie.Genres }" HeightRequest="80" VerticalOptions="Center" HorizontalOptions="Center">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
                                 
@@ -52,23 +52,38 @@
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </StackLayout>
-                    <Label Text="{ Binding Language, StringFormat='Language: {0}' }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Small" />
-                    <Grid HeightRequest="130">
+                    <Label 
+                        Text="{ Binding Movie.ReleaseDate, StringFormat='Release Date: {0}' }" 
+                        HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                    <Label Text="{ Binding  Movie.Language, Converter={StaticResource LanguageConverter} }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                    <Label Text="{ Binding Movie.HomePage }" 
+                           TextDecorations="Underline"
+                           TextColor="#8d3be3"
+                           HorizontalOptions="FillAndExpand" 
+                           VerticalOptions="FillAndExpand"  
+                           HorizontalTextAlignment="Center" 
+                           VerticalTextAlignment="Center" 
+                           FontSize="Medium">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenHomePageCommand}" CommandParameter="{Binding  Movie.HomePage}"></TapGestureRecognizer>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Grid HeightRequest="85">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="110" />
+                            <RowDefinition Height="60" />
                             <RowDefinition Height="20" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Label Text="{ Binding Score }" Grid.Row="0" Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Header" FontAttributes="Bold" TextColor="{Binding Score, Converter={StaticResource ScoreColorConverter}}" />
-                        <Label Text="{ Binding Votes }" Grid.Row="0" Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Header" FontAttributes="Bold" />
-                        <Label Text="Score" Grid.Row="1" Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Small" />
-                        <Label Text="Votes" Grid.Row="1" Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Small" />
+                        <Label Text="{ Binding  Movie.Score }" Grid.Row="0" Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="50" FontAttributes="Bold" TextColor="{Binding  Movie.Score, Converter={StaticResource ScoreColorConverter}}" />
+                        <Label Text="{ Binding  Movie.Votes }" Grid.Row="0" Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="50" FontAttributes="Bold" />
+                        <Label Text="Score" Grid.Row="1" Grid.Column="0" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                        <Label Text="Votes" Grid.Row="1" Grid.Column="1" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
                     </Grid>
                     <Label Text="Overview" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" FontAttributes="Bold" />
-                    <Label Text="{ Binding OverView }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                    <Label Text="{ Binding  Movie.OverView }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
                 </StackLayout>
             </ScrollView>
             <Button Grid.Row="1" Grid.Column="0" Text="Close" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" BackgroundColor="#8d3be3" BorderColor="Transparent" BorderWidth="1" FontSize="Small" CornerRadius="20" WidthRequest="200" Command="{ Binding CloseModalCommand }" />

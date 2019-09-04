@@ -61,16 +61,23 @@ namespace UpcomingMovies.Component
                 movieModel.Score = response.vote_average;
                 movieModel.Votes = response.vote_count;
                 movieModel.Language = response.original_language;
-                movieModel.HomePage = response.homepage;
+
+                movieModel.HomePage = string.IsNullOrEmpty(response.homepage) ? "Not available" : response.homepage;
+
+                movieModel.ProducedBy = string.Format("Produced By: {0}", string.Join(", ", response.production_companies.Select(r => r.name)));
+                movieModel.ProducedIn = string.Format("Produced In: {0}", string.Join(", ", response.production_countries.Select(r => r.name)));
 
                 movieresource = string.Format(MoviesApiResourcesConsts.MOVIE_IMAGES, movieID);
                 var imagesresponse = await Global.Instance.BaseService.Consume<MovieParameter, MovieDTO>(movieParameter, movieresource, HTTPMethodEnum.GET);
-                movieModel.Images.AddRange(imagesresponse.posters.Select(p => new ImageModel
+                if (imagesresponse.posters != null && imagesresponse.posters.Any())
                 {
-                    Height = p.height,
-                    Width = p.width,
-                    Path = p.file_path.BuildImageURI()
-                }));
+                    movieModel.Images.AddRange(imagesresponse.posters.Select(p => new ImageModel
+                    {
+                        Height = p.height,
+                        Width = p.width,
+                        Path = p.file_path.BuildImageURI()
+                    }));
+                }
             }
             catch (Exception ex)
             {

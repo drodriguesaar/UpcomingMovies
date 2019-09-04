@@ -98,6 +98,12 @@ namespace UpcomingMovies.ViewModel
 
         public void SearchByText(string searchText)
         {
+            if (this._Navigated)
+            {
+                _Navigated = false;
+                return;
+            }
+
             this.SearchText = string.Format("Results to {0}", searchText);
             this.IsVisible = false;
 

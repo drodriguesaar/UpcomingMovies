@@ -25,6 +25,9 @@
     <EmbeddedResource Update="MoviePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="MovieWebHomePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="PrincipalTabbedPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -61,6 +64,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="MovieWebHomePage.xaml.cs">
+      <DependentUpon>MovieWebHomePage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="SearchMoviesResultPage.xaml.cs">
       <DependentUpon>SearchMoviesResultPage.xaml</DependentUpon>
     </Compile>
