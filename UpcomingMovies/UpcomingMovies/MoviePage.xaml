@@ -28,7 +28,7 @@
                             <UriImageSource Uri="{Binding Movie.Poster}" CacheValidity="4" CachingEnabled="True" />
                         </Image.Source>
                     </Image>
-                    <Label Text="{ Binding Movie.Name }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="50" FontAttributes="Bold" />
+                    <Label Text="{ Binding Movie.Name }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="45" FontAttributes="Bold" />
                     <StackLayout Orientation="Horizontal" BindableLayout.ItemsSource="{Binding  Movie.Genres }" HeightRequest="80" VerticalOptions="Center" HorizontalOptions="Center">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
@@ -55,8 +55,8 @@
                     <Label 
                         Text="{ Binding Movie.ReleaseDate, StringFormat='Release Date: {0}' }" 
                         HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
-                    <Label Text="{ Binding  Movie.Language, Converter={StaticResource LanguageConverter}, StringFormat='Language: {0}' }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
-                    <Label Text="{ Binding Movie.HomePage, StringFormat='Homepage: {0}' }" 
+                    <Label Text="{ Binding  Movie.Language, Converter={StaticResource LanguageConverter} }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                    <Label Text="{ Binding Movie.HomePage }" 
                            TextDecorations="Underline"
                            TextColor="#8d3be3"
                            HorizontalOptions="FillAndExpand" 
