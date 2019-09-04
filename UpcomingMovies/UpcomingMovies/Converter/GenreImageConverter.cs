@@ -18,7 +18,7 @@ namespace UpcomingMovies.Converter
                     return "ic_westernmovie.png";
 
                 case "war":
-                    return "ic_warnmovie.png";
+                    return "ic_warmovie.png";
 
                 case "action":
                     return "ic_actionmovie.png";

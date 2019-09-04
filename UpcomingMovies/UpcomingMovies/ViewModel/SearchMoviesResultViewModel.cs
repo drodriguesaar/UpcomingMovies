@@ -33,6 +33,7 @@ namespace UpcomingMovies.ViewModel
             Movies = new ObservableCollection<MovieModel>();
             GetMovieCommand = new Command<MovieModel>(GetMovie);
             MovieAppearCommand = new Command<MovieModel>(MovieAppear);
+            PullToRefreshCommand = new Command(PullToRefresh);
         }
 
 
@@ -96,6 +97,8 @@ namespace UpcomingMovies.ViewModel
 
         public ICommand MovieAppearCommand { get; private set; }
 
+        public ICommand PullToRefreshCommand { get; private set; }
+
         public void SearchByText(string searchText)
         {
             if (this._Navigated)
@@ -104,9 +107,8 @@ namespace UpcomingMovies.ViewModel
                 return;
             }
 
-            this.SearchText = string.Format("Results to {0}", searchText);
             this.IsVisible = false;
-
+            this.SearchText = searchText;
             Global.Instance.Toast.ShortToast(string.Format("Searching by {0}...", searchText));
 
             _movieParameter.Page = 1;
@@ -129,6 +131,7 @@ namespace UpcomingMovies.ViewModel
                             PopulateListView(movies);
                         }
                         this.IsVisible = true;
+                        this.IsRefreshing = false;
                     }
                 });
             });
@@ -182,6 +185,14 @@ namespace UpcomingMovies.ViewModel
                     }
                 });
             });
+        }
+        
+        void PullToRefresh()
+        {
+            this.IsRefreshing = true;
+            this.IsVisible = false;
+            SearchByText(this.SearchText);
+
         }
     }
 }

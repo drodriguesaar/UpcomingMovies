@@ -90,15 +90,23 @@ namespace UpcomingMovies.ViewModel
 
             GetActorCommand = new Command<ActorModel>(GetActor);
             ActorAppearCommand = new Command<ActorModel>(ActorAppear);
+            PullToRefreshCommand = new Command(PullToRefresh);
         }
 
         public ICommand GetActorCommand { get; set; }
         public ICommand ActorAppearCommand { get; set; }
+        public ICommand PullToRefreshCommand { get; set; }
 
 
         public void SearchByText(string searchText)
         {
-            this.SearchText = string.Format("Results to {0}", searchText);
+            if (this._Navigated)
+            {
+                _Navigated = false;
+                return;
+            }
+
+            this.SearchText = searchText;
             this.IsVisible = false;
 
             Global.Instance.Toast.ShortToast(string.Format("Searching by {0}...", searchText));
@@ -124,6 +132,7 @@ namespace UpcomingMovies.ViewModel
                                 PopulateListView(actors);
                             }
                             this.IsVisible = true;
+                            this.IsRefreshing = false;
                         }
                     });
             });
@@ -179,6 +188,13 @@ namespace UpcomingMovies.ViewModel
                 actor.Position = position;
                 Actors.Add(actor);
             });
+        }
+
+        void PullToRefresh()
+        {
+            this.IsRefreshing = true;
+            this.IsVisible = false;
+            this.SearchByText(this.SearchText);
         }
     }
 }

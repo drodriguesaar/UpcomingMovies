@@ -23,7 +23,7 @@
                                HorizontalOptions="CenterAndExpand" 
                                VerticalOptions="CenterAndExpand">
             </ActivityIndicator>
-            <Label Text="{Binding SearchText }"></Label>
+            <Label Text="{Binding SearchText, StringFormat='Results to {0}' }" FontAttributes="Bold"></Label>
             <ListView  
                     HorizontalOptions="FillAndExpand" 
                     VerticalOptions="StartAndExpand"
@@ -31,7 +31,9 @@
                     ItemsSource="{ Binding Actors }"
                     HasUnevenRows="True"
                     IsPullToRefreshEnabled="True"
-                    CachingStrategy="RecycleElementAndDataTemplate">
+                    CachingStrategy="RecycleElementAndDataTemplate"
+                    RefreshCommand="{Binding PullToRefreshCommand}"
+                    IsRefreshing="{Binding IsRefreshing}">
                 <ListView.Behaviors>
                     <behavior:EventToCommandBehavior EventName="ItemTapped" Command="{ Binding GetActorCommand }" Converter="{ StaticResource ItemTappedConverter }"/>
                     <behavior:EventToCommandBehavior EventName="ItemAppearing" Command="{ Binding ActorAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>
