@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="UpcomingMovies.MovieWebHomePage">
+    <ContentPage.Content>
+        <AbsoluteLayout Padding="0,0,0,0" AbsoluteLayout.LayoutBounds="1,1,1,1" AbsoluteLayout.LayoutFlags="All">
+            <ScrollView>
+                <WebView 
+                    Source="{Binding MovieUri}" 
+                    HeightRequest="1000" 
+                    WidthRequest="1000" 
+                    HorizontalOptions="CenterAndExpand" 
+                    VerticalOptions="CenterAndExpand" 
+                    IsEnabled="True" 
+                    IsVisible="True"/>
+            </ScrollView>
+            <AbsoluteLayout AbsoluteLayout.LayoutBounds="0.50,1,1,0.25" AbsoluteLayout.LayoutFlags="All" HorizontalOptions="CenterAndExpand" VerticalOptions="End">
+                <Button Text="Close"
+                        Visual="Material"
+                        Command="{Binding CloseWebViewCommand}"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="End" 
+                        BackgroundColor="#8d3be3" TextColor="White" BorderColor="Transparent" BorderWidth="1" FontSize="Small" CornerRadius="20" WidthRequest="200" HeightRequest="40" />
+            </AbsoluteLayout>
+        </AbsoluteLayout>
+    </ContentPage.Content>
+</ContentPage>

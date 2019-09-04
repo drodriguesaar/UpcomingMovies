@@ -23,6 +23,7 @@ namespace UpcomingMovies.ViewModel
             _movieParameter = new MovieParameter();
             _movieService = new MovieService();
             CloseModalCommand = new Command(CloseModal);
+            OpenHomePageCommand = new Command<object>(OpenHomePage);
         }
 
         MovieModel _Movie;
@@ -40,15 +41,23 @@ namespace UpcomingMovies.ViewModel
         }
 
         public ICommand CloseModalCommand { get; set; }
+        public ICommand OpenHomePageCommand { get; set; }
 
         void CloseModal()
         {
             this._Navigation.PopModalAsync(true);
         }
-
+        void OpenHomePage(object homePage)
+        {
+            Device.OpenUri(new System.Uri((string)homePage));            
+        }
         public void GetMovieDetails(int id)
         {
-            
+            if (this._Navigated)
+            {
+                this._Navigated = false;
+                return;
+            }
             _movieParameter.Id = id;
             Device.BeginInvokeOnMainThread(() =>
             {

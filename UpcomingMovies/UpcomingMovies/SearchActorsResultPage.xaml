@@ -30,7 +30,8 @@
                     IsVisible="{ Binding IsVisible }"
                     ItemsSource="{ Binding Actors }"
                     HasUnevenRows="True"
-                    IsPullToRefreshEnabled="True">
+                    IsPullToRefreshEnabled="True"
+                    CachingStrategy="RecycleElementAndDataTemplate">
                 <ListView.Behaviors>
                     <behavior:EventToCommandBehavior EventName="ItemTapped" Command="{ Binding GetActorCommand }" Converter="{ StaticResource ItemTappedConverter }"/>
                     <behavior:EventToCommandBehavior EventName="ItemAppearing" Command="{ Binding ActorAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>
