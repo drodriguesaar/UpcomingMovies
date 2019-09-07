@@ -63,10 +63,19 @@ namespace UpcomingMovies.Converter
                     return "ic_crimemovie.png";
 
                 case "science fiction":
+                    return "ic_scifimovie.png";
+
+                case "fantasy":
                     return "ic_fantasymovie.png";
 
+                case "tv movie":
+                    return "ic_tvmovie.png";
+
+                case "political":
+                    return "ic_politicalmovie.png";
+
                 default:
-                    return "ic_postermovie.png";
+                    return "ic_tvmovie.png";
             }
         }
 

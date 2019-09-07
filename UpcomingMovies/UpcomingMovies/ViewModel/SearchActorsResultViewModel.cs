@@ -109,7 +109,7 @@ namespace UpcomingMovies.ViewModel
             this.SearchText = searchText;
             this.IsVisible = false;
 
-            Global.Instance.Toast.ShortToast(string.Format("Searching by {0}...", searchText));
+            Global.Instance.Toast.Show(string.Format("Searching by {0}...", searchText));
 
             _movieParameter.Page = 1;
             _movieParameter.Query = HttpUtility.UrlEncode(searchText);
@@ -124,7 +124,7 @@ namespace UpcomingMovies.ViewModel
                             var actors = actorsList.Result;
                             if (!actors.Any())
                             {
-                                Global.Instance.Toast.ShortToast("No actors found...");
+                                Global.Instance.Toast.Show("No actors found...");
                             }
                             else
                             {
@@ -169,7 +169,7 @@ namespace UpcomingMovies.ViewModel
                         var actors = actorsList.Result;
                         if (!actors.Any())
                         {
-                            Global.Instance.Toast.ShortToast("No more actors...");
+                            Global.Instance.Toast.Show("No more actors...");
                             return;
                         }
                         PopulateListView(actors);

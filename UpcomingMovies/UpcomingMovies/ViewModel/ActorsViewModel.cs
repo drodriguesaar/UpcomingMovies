@@ -114,7 +114,7 @@ namespace UpcomingMovies.ViewModel
                         var actorsResult = actorsList.Result;
                         if (!actorsResult.Any())
                         {
-                            Global.Instance.Toast.ShortToast("No actors found...");
+                            Global.Instance.Toast.Show("No actors found...");
                         }
                         else
                         {
@@ -146,7 +146,7 @@ namespace UpcomingMovies.ViewModel
                         var actorsResult = actorList.Result;
                         if (!actorsResult.Any())
                         {
-                            Global.Instance.Toast.ShortToast("No actors found...");
+                            Global.Instance.Toast.Show("No actors found...");
                         }
                         else
                         {
@@ -178,7 +178,7 @@ namespace UpcomingMovies.ViewModel
                         var actors = actorsList.Result;
                         if (!actors.Any())
                         {
-                            Global.Instance.Toast.ShortToast("No more movies...");
+                            Global.Instance.Toast.Show("No more movies...");
                             return;
                         }
                         PopulateActorListView(actors);

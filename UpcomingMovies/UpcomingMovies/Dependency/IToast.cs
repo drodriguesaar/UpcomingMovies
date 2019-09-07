@@ -1,7 +1,9 @@
-﻿namespace UpcomingMovies.Dependency
+﻿using Android.Widget;
+
+namespace UpcomingMovies.Dependency
 {
     public interface IToast
     {
-        void ShortToast(string message);
+        void Show(string message, bool shortLength = true);
     }
 }

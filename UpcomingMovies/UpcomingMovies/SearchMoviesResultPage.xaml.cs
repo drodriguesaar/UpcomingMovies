@@ -34,7 +34,7 @@ namespace UpcomingMovies
             }
             catch
             {
-                Global.Instance.Toast.ShortToast("Heck, this was unexpected...");
+                Global.Instance.Toast.Show("Heck, this was unexpected...");
             }
             base.OnAppearing();
         }

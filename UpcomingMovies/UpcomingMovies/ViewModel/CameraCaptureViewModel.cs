@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Plugin.Media;
+using Plugin.Media.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Web;
 using System.Windows.Input;
 using UpcomingMovies.Component;
@@ -13,19 +13,19 @@ using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
 using Xamarin.Forms;
 
+
 namespace UpcomingMovies.ViewModel
 {
-    class SearchMoviesResultViewModel : ViewModelBase
+    public class CameraCaptureViewModel : ViewModelBase
     {
         readonly MovieService _movieService;
         readonly MovieParameter _movieParameter;
-        
-        public SearchMoviesResultViewModel()
+        public CameraCaptureViewModel()
         {
 
         }
 
-        public SearchMoviesResultViewModel(INavigation navigation)
+        public CameraCaptureViewModel(INavigation navigation)
         {
             _Navigation = navigation;
             _movieParameter = new MovieParameter();
@@ -36,6 +36,76 @@ namespace UpcomingMovies.ViewModel
             PullToRefreshCommand = new Command(PullToRefresh);
         }
 
+        public async void Init()
+        {
+            if (this._Navigated)
+            {
+                _Navigated = false;
+                return;
+            }
+
+            this.IsVisible = false;
+            Global.Instance.Toast.Show("Starting camera...");
+            await CrossMedia.Current.Initialize();
+            if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
+            {
+                Global.Instance.Toast.Show("No camera available!");
+                return;
+            }
+
+            var storage = new StoreCameraMediaOptions()
+            {
+                SaveToAlbum = true,
+                Name = string.Format("Movie_Poster_{0}.jpg", Guid.NewGuid().ToString()),
+                DefaultCamera = CameraDevice.Rear,
+                PhotoSize = PhotoSize.Large,
+                ModalPresentationStyle = MediaPickerModalPresentationStyle.OverFullScreen
+            };
+
+            var moviePosterMedia = await CrossMedia.Current.TakePhotoAsync(storage);
+
+            if (moviePosterMedia == null)
+            {
+                Global.Instance.Toast.Show("No photo taken...");
+            }
+
+            var text = Global.Instance.CameraOCR.ReadTextFromImage(moviePosterMedia.Path);
+
+            if (string.IsNullOrEmpty(text))
+            {
+                Global.Instance.Toast.Show("No recognizable text...");
+            }
+
+            this.SearchText = text;
+            Global.Instance.Toast.Show(string.Format("Searching by {0}...", text));
+
+            _movieParameter.Page = 1;
+            _movieParameter.Query = HttpUtility.UrlEncode(text);
+            _movieParameter.Resource = MoviesApiResourcesConsts.SEARCH_MOVIE;
+
+            await _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
+             {
+                 Device.BeginInvokeOnMainThread(() =>
+                 {
+                     if (moviesList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
+                     {
+                         var movies = moviesList.Result;
+                         if (!movies.Any())
+                         {
+                             Global.Instance.Toast.Show("No movies found...");
+                         }
+                         else
+                         {
+                             Movies.Clear();
+                             PopulateListView(movies);
+                         }
+                         this.IsVisible = true;
+                         this.IsRefreshing = false;
+                     }
+                 });
+             });
+
+        }
 
         bool _IsVisible;
         public bool IsVisible
@@ -57,7 +127,7 @@ namespace UpcomingMovies.ViewModel
             get { return _SearchText; }
             set
             {
-                if(_SearchText != value)
+                if (_SearchText != value)
                 {
                     _SearchText = value;
                     OnPropertyChanged("SearchText");
@@ -78,7 +148,7 @@ namespace UpcomingMovies.ViewModel
                 }
             }
         }
-        
+
         ObservableCollection<MovieModel> _Movies;
         public ObservableCollection<MovieModel> Movies
         {
@@ -98,45 +168,6 @@ namespace UpcomingMovies.ViewModel
         public ICommand MovieAppearCommand { get; private set; }
 
         public ICommand PullToRefreshCommand { get; private set; }
-
-        public void SearchByText(string searchText)
-        {
-            if (this._Navigated)
-            {
-                _Navigated = false;
-                return;
-            }
-
-            this.IsVisible = false;
-            this.SearchText = searchText;
-            Global.Instance.Toast.Show(string.Format("Searching by {0}...", searchText));
-
-            _movieParameter.Page = 1;
-            _movieParameter.Query = HttpUtility.UrlEncode(searchText);
-            _movieParameter.Resource = MoviesApiResourcesConsts.SEARCH_MOVIE;
-            _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    if (moviesList.Status == System.Threading.Tasks.TaskStatus.RanToCompletion)
-                    {
-                        var movies = moviesList.Result;
-                        if (!movies.Any())
-                        {
-                            Global.Instance.Toast.Show("No movies found...");
-                        }
-                        else
-                        {
-                            Movies.Clear();
-                            PopulateListView(movies);
-                        }
-                        this.IsVisible = true;
-                        this.IsRefreshing = false;
-                    }
-                });
-            });
-
-        }
 
         void PopulateListView(List<MovieModel> movies)
         {
@@ -164,9 +195,7 @@ namespace UpcomingMovies.ViewModel
 
             var resource = MoviesApiResourcesConsts.SEARCH_MOVIE;
             var searchQuery = HttpUtility.UrlEncode(SearchText);
-#if __ANDROID__
-            App.Toast.ShortToast("Loading...");
-#endif
+
             _movieParameter.Page = _movieParameter.Page + 1;
             _movieParameter.Resource = resource;
             _movieService.GetMovies(_movieParameter).ContinueWith((moviesList) =>
@@ -186,13 +215,12 @@ namespace UpcomingMovies.ViewModel
                 });
             });
         }
-        
+
         void PullToRefresh()
         {
             this.IsRefreshing = true;
             this.IsVisible = false;
-            SearchByText(this.SearchText);
-
+            Init();
         }
     }
 }
