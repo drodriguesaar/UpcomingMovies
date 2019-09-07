@@ -10,8 +10,21 @@ namespace UpcomingMovies.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            decimal score;
-            Decimal.TryParse((string)value,out score);
+            if (value == null)
+            {
+                return Color.Default;
+            }
+
+            int score;
+
+            var scorestring = ((string)value);
+
+            if (scorestring.Contains("."))
+            {
+                scorestring = scorestring.Split('.')[0];
+            }
+
+            int.TryParse(scorestring, out score);
 
             switch (Decimal.Truncate(score))
             {

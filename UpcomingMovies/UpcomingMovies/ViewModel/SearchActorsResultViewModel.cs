@@ -90,18 +90,26 @@ namespace UpcomingMovies.ViewModel
 
             GetActorCommand = new Command<ActorModel>(GetActor);
             ActorAppearCommand = new Command<ActorModel>(ActorAppear);
+            PullToRefreshCommand = new Command(PullToRefresh);
         }
 
         public ICommand GetActorCommand { get; set; }
         public ICommand ActorAppearCommand { get; set; }
+        public ICommand PullToRefreshCommand { get; set; }
 
 
         public void SearchByText(string searchText)
         {
-            this.SearchText = string.Format("Results to {0}", searchText);
+            if (this._Navigated)
+            {
+                _Navigated = false;
+                return;
+            }
+
+            this.SearchText = searchText;
             this.IsVisible = false;
 
-            Global.Instance.Toast.ShortToast(string.Format("Searching by {0}...", searchText));
+            Global.Instance.Toast.Show(string.Format("Searching by {0}...", searchText));
 
             _movieParameter.Page = 1;
             _movieParameter.Query = HttpUtility.UrlEncode(searchText);
@@ -116,7 +124,7 @@ namespace UpcomingMovies.ViewModel
                             var actors = actorsList.Result;
                             if (!actors.Any())
                             {
-                                Global.Instance.Toast.ShortToast("No actors found...");
+                                Global.Instance.Toast.Show("No actors found...");
                             }
                             else
                             {
@@ -124,6 +132,7 @@ namespace UpcomingMovies.ViewModel
                                 PopulateListView(actors);
                             }
                             this.IsVisible = true;
+                            this.IsRefreshing = false;
                         }
                     });
             });
@@ -160,7 +169,7 @@ namespace UpcomingMovies.ViewModel
                         var actors = actorsList.Result;
                         if (!actors.Any())
                         {
-                            Global.Instance.Toast.ShortToast("No more actors...");
+                            Global.Instance.Toast.Show("No more actors...");
                             return;
                         }
                         PopulateListView(actors);
@@ -179,6 +188,13 @@ namespace UpcomingMovies.ViewModel
                 actor.Position = position;
                 Actors.Add(actor);
             });
+        }
+
+        void PullToRefresh()
+        {
+            this.IsRefreshing = true;
+            this.IsVisible = false;
+            this.SearchByText(this.SearchText);
         }
     }
 }

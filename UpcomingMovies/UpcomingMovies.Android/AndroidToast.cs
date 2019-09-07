@@ -19,9 +19,9 @@ namespace UpcomingMovies.Droid
 
     public class AndroidToast : IToast
     {
-        public void ShortToast(string message)
+        public void Show(string message, bool shortLength = true)
         {
-            Toast.MakeText(Application.Context, message, ToastLength.Short).Show();
+            Toast.MakeText(Application.Context, message, shortLength ? ToastLength.Short : ToastLength.Long).Show();
         }
     }
 }

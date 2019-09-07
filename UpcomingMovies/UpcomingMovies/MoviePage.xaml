@@ -41,7 +41,7 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" >
+                                            <Image Grid.Row="0" Grid.Column="0" HorizontalOptions="Center">
                                                 <Image.Source>
                                                     <FileImageSource File="{Binding Name, Converter={ StaticResource GenreImageConverter } }"/>
                                                 </Image.Source>
@@ -55,7 +55,7 @@
                     <Label 
                         Text="{ Binding Movie.ReleaseDate, StringFormat='Release Date: {0}' }" 
                         HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
-                    <Label Text="{ Binding  Movie.Language, Converter={StaticResource LanguageConverter} }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
+                    <Label Text="{ Binding  Movie.Language, StringFormat='Language: {0}', Converter={StaticResource LanguageConverter} }" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Medium" />
                     <Label Text="{ Binding Movie.HomePage }" 
                            TextDecorations="Underline"
                            TextColor="#8d3be3"

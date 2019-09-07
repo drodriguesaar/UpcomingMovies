@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Plugin.Media;
+using Plugin.Media.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -87,6 +89,7 @@ namespace UpcomingMovies.ViewModel
             SearchMovieCommand = new Command(SearchMovie);
             MovieAppearCommand = new Command<MovieModel>(MovieAppear);
             PullToRefreshCommand = new Command(PullToRefresh);
+            CameraCaptureCommand = new Command(CameraCapture);
         }
 
 
@@ -94,6 +97,7 @@ namespace UpcomingMovies.ViewModel
         public ICommand SearchMovieCommand { get; set; }
         public ICommand MovieAppearCommand { get; set; }
         public ICommand PullToRefreshCommand { get; set; }
+        public ICommand CameraCaptureCommand { get; set; }
 
         public void Init()
         {
@@ -115,7 +119,7 @@ namespace UpcomingMovies.ViewModel
                         var movies = moviesList.Result;
                         if (!movies.Any())
                         {
-                            Global.Instance.Toast.ShortToast("No movies found...");
+                            Global.Instance.Toast.Show("No movies found...");
                         }
                         else
                         {
@@ -141,9 +145,16 @@ namespace UpcomingMovies.ViewModel
             this.SearchText = string.Empty;
         }
 
+        void CameraCapture()
+        {
+            _Navigated = true;
+            this.SearchText = string.Empty;
+            _Navigation.PushModalAsync(new CameraCapturePage { }, true);
+        }
+
         void PullToRefresh()
         {
-            Global.Instance.Toast.ShortToast("Refreshing...");
+            Global.Instance.Toast.Show("Refreshing...");
 
             this.IsRefreshing = true;
             this.IsVisibleMovies = false;
@@ -158,7 +169,7 @@ namespace UpcomingMovies.ViewModel
                             var movies = moviesList.Result;
                             if (!movies.Any())
                             {
-                                Global.Instance.Toast.ShortToast("No movies found...");
+                                Global.Instance.Toast.Show("No movies found...");
                             }
                             else
                             {
@@ -192,7 +203,7 @@ namespace UpcomingMovies.ViewModel
                             var movies = moviesList.Result;
                             if (!movies.Any())
                             {
-                                Global.Instance.Toast.ShortToast("No more movies...");
+                                Global.Instance.Toast.Show("No more movies...");
                             }
                             else
                             {

@@ -6,10 +6,10 @@ using Xamarin.Forms.Xaml;
 namespace UpcomingMovies
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MovieWebHomePage : ContentPage
+    public partial class CameraCapturePage : ContentPage
     {
         public string MovieUri { get; set; }
-        public MovieWebHomePage()
+        public CameraCapturePage()
         {
             InitializeComponent();
             SetConfiguration();
@@ -23,17 +23,17 @@ namespace UpcomingMovies
         }
         void SetPageData()
         {
-            BindingContext = new MovieWebHomeViewModel(this.Navigation);
+            BindingContext = new CameraCaptureViewModel(this.Navigation);
         }
         protected override void OnAppearing()
         {
             try
             {
-                ((MovieWebHomeViewModel)BindingContext).Init(MovieUri);
+                ((CameraCaptureViewModel)BindingContext).Init();
             }
             catch
             {
-                Global.Instance.Toast.ShortToast("Heck, this was unexpected...");
+                Global.Instance.Toast.Show("Heck, this was unexpected...", false);
             }
             base.OnAppearing();
         }

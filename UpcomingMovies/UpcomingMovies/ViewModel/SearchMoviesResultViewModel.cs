@@ -33,6 +33,7 @@ namespace UpcomingMovies.ViewModel
             Movies = new ObservableCollection<MovieModel>();
             GetMovieCommand = new Command<MovieModel>(GetMovie);
             MovieAppearCommand = new Command<MovieModel>(MovieAppear);
+            PullToRefreshCommand = new Command(PullToRefresh);
         }
 
 
@@ -96,6 +97,8 @@ namespace UpcomingMovies.ViewModel
 
         public ICommand MovieAppearCommand { get; private set; }
 
+        public ICommand PullToRefreshCommand { get; private set; }
+
         public void SearchByText(string searchText)
         {
             if (this._Navigated)
@@ -104,10 +107,9 @@ namespace UpcomingMovies.ViewModel
                 return;
             }
 
-            this.SearchText = string.Format("Results to {0}", searchText);
             this.IsVisible = false;
-
-            Global.Instance.Toast.ShortToast(string.Format("Searching by {0}...", searchText));
+            this.SearchText = searchText;
+            Global.Instance.Toast.Show(string.Format("Searching by {0}...", searchText));
 
             _movieParameter.Page = 1;
             _movieParameter.Query = HttpUtility.UrlEncode(searchText);
@@ -121,7 +123,7 @@ namespace UpcomingMovies.ViewModel
                         var movies = moviesList.Result;
                         if (!movies.Any())
                         {
-                            Global.Instance.Toast.ShortToast("No movies found...");
+                            Global.Instance.Toast.Show("No movies found...");
                         }
                         else
                         {
@@ -129,6 +131,7 @@ namespace UpcomingMovies.ViewModel
                             PopulateListView(movies);
                         }
                         this.IsVisible = true;
+                        this.IsRefreshing = false;
                     }
                 });
             });
@@ -175,13 +178,21 @@ namespace UpcomingMovies.ViewModel
                         var movies = moviesList.Result;
                         if (!movies.Any())
                         {
-                            Global.Instance.Toast.ShortToast("No more movies...");
+                            Global.Instance.Toast.Show("No more movies...");
                             return;
                         }
                         PopulateListView(movies);
                     }
                 });
             });
+        }
+        
+        void PullToRefresh()
+        {
+            this.IsRefreshing = true;
+            this.IsVisible = false;
+            SearchByText(this.SearchText);
+
         }
     }
 }

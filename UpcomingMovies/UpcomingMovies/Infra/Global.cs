@@ -48,6 +48,20 @@ namespace UpcomingMovies.Infra
             }
         }
 
+
+        static ICameraOCR _cameraOCR;
+        public ICameraOCR CameraOCR
+        {
+            get
+            {
+                if(_cameraOCR == null)
+                {
+                    _cameraOCR = DependencyService.Get<ICameraOCR>();
+                }
+                return _cameraOCR;
+            }
+        }
+
         static IService _baseService;
         public IService BaseService
         {
