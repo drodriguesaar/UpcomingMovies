@@ -50,6 +50,7 @@ namespace UpcomingMovies.ViewModel
             if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
             {
                 Global.Instance.Toast.Show("No camera available!");
+                await this._Navigation.PopModalAsync(true);
                 return;
             }
 
@@ -58,8 +59,9 @@ namespace UpcomingMovies.ViewModel
                 SaveToAlbum = true,
                 Name = string.Format("Movie_Poster_{0}.jpg", Guid.NewGuid().ToString()),
                 DefaultCamera = CameraDevice.Rear,
-                PhotoSize = PhotoSize.Large,
-                ModalPresentationStyle = MediaPickerModalPresentationStyle.OverFullScreen
+                PhotoSize = PhotoSize.Small,
+                AllowCropping = true,
+                ModalPresentationStyle = MediaPickerModalPresentationStyle.FullScreen
             };
 
             var moviePosterMedia = await CrossMedia.Current.TakePhotoAsync(storage);
@@ -67,6 +69,8 @@ namespace UpcomingMovies.ViewModel
             if (moviePosterMedia == null)
             {
                 Global.Instance.Toast.Show("No photo taken...");
+                await this._Navigation.PopModalAsync(true);
+                return;
             }
 
             var text = Global.Instance.CameraOCR.ReadTextFromImage(moviePosterMedia.Path);
@@ -74,6 +78,7 @@ namespace UpcomingMovies.ViewModel
             if (string.IsNullOrEmpty(text))
             {
                 Global.Instance.Toast.Show("No recognizable text...");
+                return;
             }
 
             this.SearchText = text;
