@@ -1,5 +1,4 @@
-﻿using Android.Widget;
-
+﻿
 namespace UpcomingMovies.Dependency
 {
     public interface IToast
