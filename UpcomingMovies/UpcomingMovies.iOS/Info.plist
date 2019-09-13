@@ -22,9 +22,9 @@
 	<key>MinimumOSVersion</key>
 	<string>8.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>Upcoming Movies</string>
+	<string>Cinefilo</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.companyname.UpcomingMovies</string>
+	<string>com.daniel.cinefilo</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>CFBundleName</key>
@@ -60,13 +60,15 @@
 	<string>Assets.xcassets/LaunchImages.launchimage</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-  <key>NSCameraUsageDescription</key>
-  <string>This app needs access to the camera to take photos.</string>
-  <key>NSPhotoLibraryUsageDescription</key>
-  <string>This app needs access to photos.</string>
-  <key>NSMicrophoneUsageDescription</key>
-  <string>This app needs access to microphone.</string>
-  <key>NSPhotoLibraryAddUsageDescription</key>
-  <string>This app needs access to the photo gallery.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to the camera to take photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to photos.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to microphone.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to the photo gallery.</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1</string>
 </dict>
 </plist>

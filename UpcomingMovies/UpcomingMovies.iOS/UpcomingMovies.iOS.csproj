@@ -89,6 +89,9 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
+    <AppExtensionDebugBundleId />
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="iOSToast.cs" />
     <Compile Include="Main.cs" />
@@ -97,54 +100,61 @@
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
+    <ITunesArtwork Include="iTunesArtwork" />
   </ItemGroup>
   <ItemGroup>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-20x20@1x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\1024.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-20x20@2x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\120.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-20x20@2x1.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\1201.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-20x20@2x2.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\152.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-20x20@3x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\167.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-29x29@1x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\180.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-29x29@2x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\20.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-29x29@2x1.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\29.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-29x29@3x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\40.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-40x40@2x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\401.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-40x40@2x1.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\402.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-40x40@3x1.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\58.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-60x60@2x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\581.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-60x60@3x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\60.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-76x76@1x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\76.png">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-76x76@2x.png">
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\80.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\801.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\87.png">
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\LaunchImages.launchimage\Contents.json">
@@ -152,12 +162,6 @@
     </ImageAsset>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon1024.png">
-      <Visible>false</Visible>
-    </ImageAsset>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon167.png">
       <Visible>false</Visible>
     </ImageAsset>
   </ItemGroup>

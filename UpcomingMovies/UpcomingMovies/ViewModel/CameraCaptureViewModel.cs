@@ -78,6 +78,7 @@ namespace UpcomingMovies.ViewModel
             if (string.IsNullOrEmpty(text))
             {
                 Global.Instance.Toast.Show("No recognizable text...");
+                await this._Navigation.PopModalAsync(true);
                 return;
             }
 
