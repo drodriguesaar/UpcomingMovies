@@ -20,4 +20,4 @@ Build Instructions
  - None
  
 Icons From
-- https://file000.flaticon.com/downloads/license/license.pdf
+- Flaticon - https://www.flaticon.com/ | https://file000.flaticon.com/downloads/license/license.pdf
