@@ -3,8 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UpcomingMovies.SearchMoviesResultPage"
              xmlns:local="clr-namespace:UpcomingMovies.ViewModel"
+             xmlns:models="clr-namespace:UpcomingMovies.Model"
              xmlns:behavior="clr-namespace:UpcomingMovies.Behavior"
-             xmlns:converter="clr-namespace:UpcomingMovies.Converter">
+             xmlns:converter="clr-namespace:UpcomingMovies.Converter"
+             x:DataType="local:SearchMoviesResultViewModel">
     <ContentPage.BindingContext>
         <local:SearchMoviesResultViewModel />
     </ContentPage.BindingContext>
@@ -23,7 +25,7 @@
                     <behavior:EventToCommandBehavior EventName="ItemAppearing" Command="{ Binding MovieAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:MovieModel">
                         <ViewCell>
                             <ViewCell.View>
                                 <Grid>
