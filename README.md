@@ -2,6 +2,9 @@
 
 Mobile Project Using Xamarin.Forms
 
+Movie API
+- The Movie Database https://developers.themoviedb.org/ 
+
 Features:
 - Search movies by term and based on text on image.
 - Search actors by term.
