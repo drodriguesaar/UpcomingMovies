@@ -18,6 +18,7 @@ Packages Used:
  - NewtonsoftJSON: Used to serialize/deserialize JSON responses from REST web services.
  - sqlite-net-pcl
  - Xam.Plugin.Media
+ - Xamarin.GooglePlayServices.Vision
  
 Build Instructions
  - None
