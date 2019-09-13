@@ -6,8 +6,10 @@
              mc:Ignorable="d"
              x:Class="UpcomingMovies.SearchActorsResultPage"
              xmlns:local="clr-namespace:UpcomingMovies.ViewModel"
+             xmlns:models="clr-namespace:UpcomingMovies.Model"
              xmlns:behavior="clr-namespace:UpcomingMovies.Behavior"
-             xmlns:converter="clr-namespace:UpcomingMovies.Converter">
+             xmlns:converter="clr-namespace:UpcomingMovies.Converter"
+             x:DataType="local:SearchActorsResultViewModel">
     <ContentPage.BindingContext>
         <local:SearchActorsResultViewModel/>
     </ContentPage.BindingContext>
@@ -39,7 +41,7 @@
                     <behavior:EventToCommandBehavior EventName="ItemAppearing" Command="{ Binding ActorAppearCommand }" Converter="{ StaticResource ItemAppearConverter }"/>
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:ActorModel">
                         <ViewCell>
                             <ViewCell.View>
                                 <Grid>
