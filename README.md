@@ -1,6 +1,8 @@
 # UpcomingMovies
 
-Mobile Project Using Xamarin.Forms
+Mobile Project Using Xamarin.Forms.
+
+Under development, anything in this project can change at any time.
 
 Movie API
 - The Movie Database https://developers.themoviedb.org/ 
