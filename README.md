@@ -11,6 +11,7 @@ Features:
 - Search movies by term and based on text on image.
 - Search actors by term.
 - View movies and actors details.
+- Pesquisa de filmes apartir  de leitura cognitiva de uma foto com o nome do filme
 
 Incoming Features:
 - Add favorite
