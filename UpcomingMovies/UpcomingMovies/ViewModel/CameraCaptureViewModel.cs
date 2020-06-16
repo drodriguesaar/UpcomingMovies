@@ -11,6 +11,7 @@ using UpcomingMovies.Consts;
 using UpcomingMovies.Infra;
 using UpcomingMovies.Model;
 using UpcomingMovies.Parameter;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 
@@ -81,6 +82,8 @@ namespace UpcomingMovies.ViewModel
                 await this._Navigation.PopModalAsync(true);
                 return;
             }
+
+            Vibration.Vibrate();
 
             this.SearchText = text;
             Global.Instance.Toast.Show(string.Format("Searching by {0}...", text));
