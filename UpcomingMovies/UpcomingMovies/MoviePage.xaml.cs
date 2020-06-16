@@ -8,6 +8,7 @@ namespace UpcomingMovies
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MoviePage : ContentPage
     {
+        //Prop
         public int MovieID { get; set; }
         public MoviePage()
         {
